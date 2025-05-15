@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - PRAMINA</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #b71c1c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      flex-grow: 1;
+    }
+    #btnLogout {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: white;
+      color: #b71c1c;
+      border: 2px solid white;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #btnLogout:hover {
+      background-color: #7f1212;
+      color: white;
+      border-color: white;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 400px;
+      margin: 40px 15px 0 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h2.choose-menu {
+      color: #b71c1c;
+      font-weight: 700;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+      font-size: 1.5rem;
+    }
+    .fitur-btn {
+      width: 90%;
+      max-width: 350px;
+      background-color: #b71c1c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 30px 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 18px 0;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(183,28,28,0.10);
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      outline: none;
+    }
+    .fitur-btn:hover, .fitur-btn:focus {
+      background: #7f1212;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(183,28,28,0.18);
+    }
+    @media (max-width: 500px) {
+      main {
+        margin-top: 25px;
+      }
+      .fitur-btn {
+        font-size: 1.1rem;
+        padding: 22px 0;
+      }
+      h2.choose-menu {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+    <button id="btnLogout" title="Keluar">Keluar</button>
+  </header>
+
+  <main>
+    <h2 class="choose-menu">PILIH MENU</h2>
+    <button class="fitur-btn" onclick="window.location.href='ibu.html'">FITUR IBU</button>
+    <button class="fitur-btn" onclick="window.location.href='anak.html'">FITUR ANAK</button>
+  </main>
+
+  <script>
+    // Tombol Keluar
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+  </script>
+</body>
+</html>
