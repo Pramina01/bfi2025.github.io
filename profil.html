@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profil - PRAMINA</title>
   <style>
-    /* Reset dan font */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0; padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,7 +16,6 @@
       align-items: center;
       min-height: 100vh;
     }
-    /* Header */
     header {
       width: 100%;
       background-color: #b71c1c;
@@ -60,7 +56,6 @@
       color: white;
       border-color: white;
     }
-    /* Main container */
     main {
       flex: 1;
       width: 100%;
@@ -73,7 +68,6 @@
       font-weight: 700;
       letter-spacing: 1.5px;
     }
-    /* Profil card with box */
     .profile-card {
       border: 2px solid #b71c1c;
       border-radius: 10px;
@@ -102,7 +96,6 @@
       word-wrap: break-word;
       text-align: right;
     }
-    /* PIN input */
     label[for="pin"] {
       font-weight: 700;
       display: block;
@@ -120,8 +113,12 @@
       box-sizing: border-box;
       margin-bottom: 15px;
       user-select: none;
+      /* readonly to disable keyboard */
+      caret-color: transparent;
     }
-    /* Verifikasi button */
+    #pin:focus {
+      outline: none;
+    }
     #btnVerify {
       width: 100%;
       background-color: #b71c1c;
@@ -142,7 +139,6 @@
       background-color: #f5a6a6;
       cursor: default;
     }
-    /* Virtual keyboard container */
     #virtual-keyboard {
       display: flex;
       flex-wrap: wrap;
@@ -151,7 +147,6 @@
       max-width: 320px;
       margin: 0 auto 30px auto;
     }
-    /* Virtual keyboard buttons */
     .vk-btn {
       background-color: #b71c1c;
       color: white;
@@ -171,13 +166,11 @@
     .vk-btn:hover {
       background-color: #7f1212;
     }
-    /* Special buttons width */
     .vk-btn.delete {
       width: 150px;
       font-size: 1.1rem;
       letter-spacing: normal;
     }
-    /* Loading overlay */
     .loading-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -205,7 +198,6 @@
       0% { transform: rotate(0deg);}
       100% { transform: rotate(360deg);}
     }
-    /* Responsive */
     @media (max-width: 440px) {
       main {
         max-width: 90vw;
@@ -286,6 +278,13 @@
       window.location.href = "index.html";
     });
 
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+
     function showLoading(show) {
       loading.style.display = show ? 'flex' : 'none';
     }
@@ -332,7 +331,6 @@
             pinInput.value += val;
           }
         }
-        // Aktifkan tombol verifikasi jika PIN ada isinya
         btnVerify.disabled = pinInput.value.length === 0;
       });
     });

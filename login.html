@@ -126,6 +126,13 @@
       window.speechSynthesis.speak(msg);
     };
 
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+
     const loading = document.getElementById('loading');
     const html5QrCode = new Html5Qrcode("reader");
 
