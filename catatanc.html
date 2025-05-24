@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catatan Hasil ANC - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 700px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  input[type="text"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 50px;
+  }
+  button {
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background-color: #7f1212;
+  }
+  .error-message {
+    color: red;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    display: none;
+  }
+  .analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+  .analysis-table th, .analysis-table td {
+    border: 2px solid #b71c1c;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 1rem;
+  }
+  .analysis-table th {
+    background-color: #b71c1c;
+    color: white;
+    font-weight: 700;
+  }
+  .analysis-table td.analysis-result {
+    font-weight: bold;
+    color: #388e3c;
+  }
+  .analysis-table td.analysis-result.risk {
+    color: #d32f2f;
+  }
+  .analysis-table td.analysis-result.warning {
+    color: #ff9800;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+</header>
+
+<main>
+  <h2>Catatan Hasil ANC</h2>
+  <form id="ancForm" autocomplete="off" novalidate>
+    <div class="error-message" id="formError"></div>
+    <div class="form-group">
+      <label for="nik">NIK</label>
+      <input type="text" id="nik" name="nik" required />
+    </div>
+    <div class="form-group">
+      <label for="kunjungan">Kunjungan Ke-</label>
+      <select id="kunjungan" name="kunjungan" required>
+        <option value="">-- Pilih Kunjungan --</option>
+        <option value="1">Kunjungan 1</option>
+        <option value="2">Kunjungan 2</option>
+        <option value="3">Kunjungan 3</option>
+        <option value="4">Kunjungan 4</option>
+        <option value="5">Kunjungan 5</option>
+        <option value="6">Kunjungan 6</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="umur">Umur (tahun)</label>
+      <input type="number" id="umur" name="umur" min="10" max="60" required />
+    </div>
+    <div class="form-group">
+      <label for="usiaKehamilan">Usia Kehamilan (bulan)</label>
+      <input type="number" id="usiaKehamilan" name="usiaKehamilan" min="1" max="12" required />
+    </div>
+    <div class="form-group">
+      <label for="tinggiBadan">Tinggi Badan (cm)</label>
+      <input type="number" id="tinggiBadan" name="tinggiBadan" min="100" max="220" required />
+    </div>
+    <div class="form-group">
+      <label for="beratBadan">Berat Badan (kg)</label>
+      <input type="number" id="beratBadan" name="beratBadan" min="30" max="200" required />
+    </div>
+    <div class="form-group">
+      <label for="kenaikanBeratBadan">Kenaikan Berat Badan (kg)</label>
+      <input type="number" id="kenaikanBeratBadan" name="kenaikanBeratBadan" step="0.1" required />
+    </div>
+    <div class="form-group">
+      <label for="tekananDarah">Tekanan Darah (/90 mmHg)</label>
+      <input type="number" id="tekananDarah" name="tekananDarah" min="80" max="250" required />
+    </div>
+    <div class="form-group">
+      <label for="lingkarLenganAtas">Lingkar Lengan Atas (cm)</label>
+      <input type="number" id="lingkarLenganAtas" name="lingkarLenganAtas" min="10" max="60" required />
+    </div>
+    <div class="form-group">
+      <label for="tinggiFundusUteri">Tinggi Fundus Uteri (cm)</label>
+      <input type="number" id="tinggiFundusUteri" name="tinggiFundusUteri" min="1" max="50" required />
+    </div>
+    <div class="form-group">
+      <label for="denyutJantungJanin">Denyut Jantung Janin (/menit)</label>
+      <input type="number" id="denyutJantungJanin" name="denyutJantungJanin" min="50" max="250" required />
+    </div>
+    <div class="form-group">
+      <label for="hemoglobin">Hemoglobin (g/dL)</label>
+      <input type="number" id="hemoglobin" name="hemoglobin" step="0.1" min="5" max="20" required />
+    </div>
+    <div class="form-group">
+      <label for="saranDokter">Saran Dokter</label>
+      <textarea id="saranDokter" name="saranDokter" required></textarea>
+    </div>
+    <button type="submit">Simpan dan Analisis</button>
+  </form>
+
+  <div id="analysisResult"></div>
+</main>
+
+<script>
+  // Suara klik aktif
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+
+  const ancForm = document.getElementById('ancForm');
+  const formError = document.getElementById('formError');
+  const analysisResult = document.getElementById('analysisResult');
+
+  // Load data jika NIK dan kunjungan sudah diisi
+  function loadData(nik, kunjungan) {
+    if (!nik || !kunjungan) return;
+    const key = `catatanc_${nik}_kunjungan_${kunjungan}`;
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    if (data && Object.keys(data).length > 0) {
+      ancForm.umur.value = data.umur || '';
+      ancForm.usiaKehamilan.value = data.usiaKehamilan || '';
+      ancForm.tinggiBadan.value = data.tinggiBadan || '';
+      ancForm.beratBadan.value = data.beratBadan || '';
+      ancForm.kenaikanBeratBadan.value = data.kenaikanBeratBadan || '';
+      ancForm.tekananDarah.value = data.tekananDarah || '';
+      ancForm.lingkarLenganAtas.value = data.lingkarLenganAtas || '';
+      ancForm.tinggiFundusUteri.value = data.tinggiFundusUteri || '';
+      ancForm.denyutJantungJanin.value = data.denyutJantungJanin || '';
+      ancForm.hemoglobin.value = data.hemoglobin || '';
+      ancForm.saranDokter.value = data.saranDokter || '';
+      renderAnalysis(data);
+    } else {
+      ancForm.umur.value = '';
+      ancForm.usiaKehamilan.value = '';
+      ancForm.tinggiBadan.value = '';
+      ancForm.beratBadan.value = '';
+      ancForm.kenaikanBeratBadan.value = '';
+      ancForm.tekananDarah.value = '';
+      ancForm.lingkarLenganAtas.value = '';
+      ancForm.tinggiFundusUteri.value = '';
+      ancForm.denyutJantungJanin.value = '';
+      ancForm.hemoglobin.value = '';
+      ancForm.saranDokter.value = '';
+      analysisResult.innerHTML = '';
+    }
+  }
+
+  ancForm.nik.addEventListener('change', () => {
+    loadData(ancForm.nik.value.trim(), ancForm.kunjungan.value);
+  });
+  ancForm.kunjungan.addEventListener('change', () => {
+    loadData(ancForm.nik.value.trim(), ancForm.kunjungan.value);
+  });
+
+  ancForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    formError.style.display = "none";
+    analysisResult.innerHTML = "";
+
+    const nik = ancForm.nik.value.trim();
+    const kunjungan = ancForm.kunjungan.value;
+    const umur = parseInt(ancForm.umur.value);
+    const usiaKehamilan = parseInt(ancForm.usiaKehamilan.value);
+    const tinggiBadan = parseFloat(ancForm.tinggiBadan.value);
+    const beratBadan = parseFloat(ancForm.beratBadan.value);
+    const kenaikanBeratBadan = parseFloat(ancForm.kenaikanBeratBadan.value);
+    const tekananDarah = parseInt(ancForm.tekananDarah.value);
+    const lingkarLenganAtas = parseFloat(ancForm.lingkarLenganAtas.value);
+    const tinggiFundusUteri = parseFloat(ancForm.tinggiFundusUteri.value);
+    const denyutJantungJanin = parseInt(ancForm.denyutJantungJanin.value);
+    const hemoglobin = parseFloat(ancForm.hemoglobin.value);
+    const saranDokter = ancForm.saranDokter.value.trim();
+
+    if (!nik || !kunjungan || isNaN(umur) || isNaN(usiaKehamilan) || isNaN(tinggiBadan) || isNaN(beratBadan) ||
+        isNaN(kenaikanBeratBadan) || isNaN(tekananDarah) || isNaN(lingkarLenganAtas) ||
+        isNaN(tinggiFundusUteri) || isNaN(denyutJantungJanin) || isNaN(hemoglobin) || !saranDokter) {
+      formError.textContent = "Semua kolom wajib diisi dengan benar!";
+      formError.style.display = "block";
+      return;
+    }
+
+    // Analisis (sama seperti sebelumnya)
+    const analisis = {};
+    analisis.tinggiBadan = tinggiBadan < 145
+      ? { hasil: "BERESIKO", kelas: "risk" }
+      : { hasil: "SEHAT", kelas: "" };
+
+    const imt = beratBadan / ((tinggiBadan/100)*(tinggiBadan/100));
+    if (imt < 25) analisis.beratBadan = { hasil: "BERAT BADAN KURANG", kelas: "risk" };
+    else if (imt >= 25 && imt < 29) analisis.beratBadan = { hasil: "IDEAL", kelas: "" };
+    else analisis.beratBadan = { hasil: "BERAT BADAN BERLEBIH", kelas: "warning" };
+
+    if (kenaikanBeratBadan === 1) analisis.kenaikanBeratBadan = { hasil: "BAIK", kelas: "" };
+    else if (kenaikanBeratBadan > 1) analisis.kenaikanBeratBadan = { hasil: "RESIKO OBESITAS", kelas: "warning" };
+    else analisis.kenaikanBeratBadan = { hasil: "RESIKO MALNUTRISI", kelas: "risk" };
+
+    analisis.tekananDarah = tekananDarah < 140
+      ? { hasil: "NORMAL", kelas: "" }
+      : { hasil: "RESIKO HIPERTENSI", kelas: "risk" };
+
+    analisis.lingkarLenganAtas = lingkarLenganAtas >= 23
+      ? { hasil: "BAIK", kelas: "" }
+      : { hasil: "RESIKO MALNUTRISI", kelas: "risk" };
+
+    const tfuStandar = usiaKehamilan * 2;
+    analisis.tinggiFundusUteri = tinggiFundusUteri === tfuStandar
+      ? { hasil: "NORMAL", kelas: "" }
+      : { hasil: "BERESIKO", kelas: "risk" };
+
+    analisis.denyutJantungJanin = (denyutJantungJanin >= 110 && denyutJantungJanin <= 160)
+      ? { hasil: "NORMAL", kelas: "" }
+      : { hasil: "BERESIKO", kelas: "risk" };
+
+    analisis.hemoglobin = hemoglobin > 11
+      ? { hasil: "NORMAL", kelas: "" }
+      : { hasil: "RESIKO ANEMIA", kelas: "risk" };
+
+    // Simpan data per NIK dan kunjungan
+    const key = `catatanc_${nik}_kunjungan_${kunjungan}`;
+    const dataToSave = {
+      nik, kunjungan, umur, usiaKehamilan, tinggiBadan, beratBadan, kenaikanBeratBadan, tekananDarah,
+      lingkarLenganAtas, tinggiFundusUteri, denyutJantungJanin, hemoglobin, saranDokter,
+      analisis
+    };
+    localStorage.setItem(key, JSON.stringify(dataToSave));
+
+    renderAnalysis(dataToSave);
+    formError.style.display = "none";
+  });
+
+  function renderAnalysis(data) {
+    const a = data.analisis;
+    let html = `<table class="analysis-table">
+      <tr><th>Parameter</th><th>Nilai</th><th>Analisis</th></tr>
+      <tr><td>NIK</td><td>${data.nik}</td><td>-</td></tr>
+      <tr><td>Kunjungan Ke-</td><td>${data.kunjungan}</td><td>-</td></tr>
+      <tr><td>Umur (tahun)</td><td>${data.umur}</td><td>-</td></tr>
+      <tr><td>Usia Kehamilan (bulan)</td><td>${data.usiaKehamilan}</td><td>-</td></tr>
+      <tr><td>Tinggi Badan (cm)</td><td>${data.tinggiBadan}</td><td class="analysis-result ${a.tinggiBadan.kelas}">${a.tinggiBadan.hasil}</td></tr>
+      <tr><td>Berat Badan (kg)</td><td>${data.beratBadan}</td><td class="analysis-result ${a.beratBadan.kelas}">${a.beratBadan.hasil}</td></tr>
+      <tr><td>Kenaikan Berat Badan (kg)</td><td>${data.kenaikanBeratBadan}</td><td class="analysis-result ${a.kenaikanBeratBadan.kelas}">${a.kenaikanBeratBadan.hasil}</td></tr>
+      <tr><td>Tekanan Darah (/90 mmHg)</td><td>${data.tekananDarah}</td><td class="analysis-result ${a.tekananDarah.kelas}">${a.tekananDarah.hasil}</td></tr>
+      <tr><td>Lingkar Lengan Atas (cm)</td><td>${data.lingkarLenganAtas}</td><td class="analysis-result ${a.lingkarLenganAtas.kelas}">${a.lingkarLenganAtas.hasil}</td></tr>
+      <tr><td>Tinggi Fundus Uteri (cm)</td><td>${data.tinggiFundusUteri}</td><td class="analysis-result ${a.tinggiFundusUteri.kelas}">${a.tinggiFundusUteri.hasil}</td></tr>
+      <tr><td>Denyut Jantung Janin (/menit)</td><td>${data.denyutJantungJanin}</td><td class="analysis-result ${a.denyutJantungJanin.kelas}">${a.denyutJantungJanin.hasil}</td></tr>
+      <tr><td>Hemoglobin (g/dL)</td><td>${data.hemoglobin}</td><td class="analysis-result ${a.hemoglobin.kelas}">${a.hemoglobin.hasil}</td></tr>
+      <tr><td>Saran Dokter</td><td colspan="2" style="text-align:left;">${data.saranDokter}</td></tr>
+    </table>`;
+    analysisResult.innerHTML = html;
+  }
+</script>
+</body>
+</html>
