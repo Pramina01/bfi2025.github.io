@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Skrining Kesehatan Anak - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff0f0;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  button#btnBack, button#btnLogout {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  button#btnBack {
+    right: 100px;
+  }
+  button#btnLogout {
+    right: 20px;
+  }
+  button#btnBack:hover, button#btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    width: 100%;
+    max-width: 700px;
+    margin: 40px 15px 40px 15px;
+    background: #fff;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .pertanyaan {
+    display: flex;
+    flex-direction: column;
+  }
+  .pertanyaan label {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  .jawaban {
+    display: flex;
+    gap: 20px;
+  }
+  .jawaban label {
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+  }
+  button#btnAnalisis {
+    margin-top: 25px;
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button#btnAnalisis:hover {
+    background-color: #7f1212;
+  }
+  #hasilAnalisis {
+    margin-top: 30px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+  #btnRujukan {
+    margin-top: 20px;
+    display: none;
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: center;
+    text-decoration: none;
+    text-align: center;
+  }
+  #btnRujukan:hover {
+    background-color: #7f1212;
+  }
+  #riwayatSection {
+    margin-top: 40px;
+  }
+  #riwayatSection h3 {
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+  #riwayatList {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 15px 20px;
+    background: #fff0f0;
+  }
+  .riwayat-item {
+    border-bottom: 1px solid #b71c1c;
+    padding: 10px 0;
+  }
+  .riwayat-item:last-child {
+    border-bottom: none;
+  }
+  .riwayat-tanggal {
+    font-weight: 700;
+  }
+  .riwayat-status {
+    margin-top: 4px;
+    font-weight: 700;
+  }
+  .status-sehat {
+    color: #388e3c;
+  }
+  .status-risiko {
+    color: #d32f2f;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <h2>Skrining Kesehatan Anak</h2>
+  <form id="formSkrining">
+    <div class="pertanyaan">
+      <label>Apakah anak Anda mengalami demam dalam 7 hari terakhir?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q1" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q1" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah anak Anda mengalami batuk atau pilek dalam 7 hari terakhir?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q2" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q2" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah anak Anda mengalami diare atau muntah dalam 7 hari terakhir?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q3" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q3" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah anak Anda tampak lemas atau kurang aktif dibanding biasanya?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q4" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q4" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah nafsu makan anak menurun secara signifikan?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q5" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q5" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah berat badan anak turun dalam 1 bulan terakhir?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q6" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q6" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah anak sering mengalami sesak napas atau napas cepat?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q7" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q7" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <div class="pertanyaan">
+      <label>Apakah ada keluhan ruam, bintik merah, atau luka yang tidak sembuh di kulit anak?</label>
+      <div class="jawaban">
+        <label><input type="radio" name="q8" value="ya" required /> Ya</label>
+        <label><input type="radio" name="q8" value="tidak" /> Tidak</label>
+      </div>
+    </div>
+    <button type="submit" id="btnAnalisis">Analisis</button>
+  </form>
+
+  <div id="hasilAnalisis"></div>
+  <a href="rujukan.html" id="btnRujukan" target="_blank">Buat Rujukan</a>
+
+  <section id="riwayatSection" style="display:none;">
+    <h3>Riwayat Hasil Skrining</h3>
+    <div id="riwayatList"></div>
+  </section>
+</main>
+
+<script>
+  // Tombol kembali dan keluar
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = 'anak.html';
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  const nikLogin = sessionStorage.getItem('nik');
+  if (!nikLogin) {
+    alert('NIK tidak ditemukan, silakan login ulang.');
+    window.location.href = 'login.html';
+  }
+
+  const form = document.getElementById('formSkrining');
+  const hasilAnalisis = document.getElementById('hasilAnalisis');
+  const btnRujukan = document.getElementById('btnRujukan');
+  const riwayatSection = document.getElementById('riwayatSection');
+  const riwayatList = document.getElementById('riwayatList');
+
+  btnRujukan.style.display = 'none';
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const jawaban = [];
+    for (let i = 1; i <= 8; i++) {
+      const val = formData.get('q' + i);
+      if (!val) {
+        alert('Mohon jawab semua pertanyaan.');
+        return;
+      }
+      jawaban.push(val);
+    }
+
+    const adaYa = jawaban.some(j => j.toLowerCase() === 'ya');
+
+    if (!adaYa) {
+      hasilAnalisis.textContent = "Anak Anda sehat, terus jaga kesehatan dan pola hidupnya.";
+      hasilAnalisis.style.color = "#388e3c";
+      btnRujukan.style.display = 'none';
+    } else {
+      hasilAnalisis.textContent = "Anak Anda berisiko sakit, sebaiknya segera periksa ke dokter.";
+      hasilAnalisis.style.color = "#d32f2f";
+      btnRujukan.style.display = 'inline-block';
+    }
+
+    // Simpan hasil ke localStorage
+    const key = `skrining_${nikLogin}`;
+    let data = JSON.parse(localStorage.getItem(key) || '[]');
+    const entry = {
+      date: new Date().toISOString(),
+      hasil: adaYa ? 'Risiko Sakit' : 'Sehat',
+      jawaban
+    };
+    data.push(entry);
+    localStorage.setItem(key, JSON.stringify(data));
+
+    tampilkanRiwayat();
+  });
+
+  function tampilkanRiwayat() {
+    const key = `skrining_${nikLogin}`;
+    const data = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!data.length) {
+      riwayatSection.style.display = 'none';
+      return;
+    }
+    riwayatSection.style.display = 'block';
+    riwayatList.innerHTML = '';
+    data.slice().reverse().forEach(entry => {
+      const tanggal = new Date(entry.date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      const statusClass = entry.hasil === 'Sehat' ? 'status-sehat' : 'status-risiko';
+      riwayatList.insertAdjacentHTML('beforeend', `
+        <div class="riwayat-item">
+          <div class="riwayat-tanggal">${tanggal}</div>
+          <div class="riwayat-status ${statusClass}">${entry.hasil}</div>
+        </div>
+      `);
+    });
+  }
+
+  // Muat riwayat saat halaman dibuka
+  window.addEventListener('load', () => {
+    tampilkanRiwayat();
+  });
+</script>
+
+</body>
+</html>

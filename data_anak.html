@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Anak - PRAMINA</title>
+  <style>
+    /* ...style tetap seperti file Anda... */
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #b71c1c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      flex-grow: 1;
+    }
+    #btnBack, #btnLogout {
+      background-color: white;
+      color: #b71c1c;
+      border: 2px solid white;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      margin-left: 10px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #btnBack { right: 100px; }
+    #btnLogout { right: 20px; }
+    #btnBack:hover, #btnLogout:hover {
+      background-color: #7f1212;
+      color: white;
+      border-color: white;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin: 40px 15px 40px 15px;
+      text-align: left;
+    }
+    .nik-info {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #b71c1c;
+      margin-bottom: 18px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1.5px solid #b71c1c;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    form {
+      background: #fff0f0;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      padding: 30px 25px;
+      box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: 700;
+      color: #b71c1c;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #b71c1c;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      background: #fff;
+      color: #b71c1c;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    input:focus,
+    select:focus {
+      border-color: #7f1212;
+      outline: none;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 30px;
+    }
+    button[type="submit"] {
+      background-color: #b71c1c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      letter-spacing: 1px;
+      min-width: 120px;
+    }
+    button[type="submit"]:hover {
+      background-color: #7f1212;
+    }
+    #btnMic {
+      background-color: #b71c1c;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      margin-left: 8px;
+      vertical-align: middle;
+      transition: background-color 0.3s ease;
+    }
+    #btnMic.recording {
+      background-color: #d32f2f;
+    }
+    #btnMic:focus {
+      outline: none;
+    }
+    #usiaAnak {
+      background-color: #f8dede;
+      cursor: not-allowed;
+    }
+    .error-message {
+      color: red;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+    <button id="btnBack" title="Kembali">Kembali</button>
+    <button id="btnLogout" title="Keluar">Keluar</button>
+  </header>
+
+  <main>
+    <div class="nik-info" id="nikTampil"></div>
+    <h2>DATA ANAK</h2>
+    <form id="formAnak" autocomplete="off" novalidate>
+      <div class="error-message" id="errorMessage" style="display:none;"></div>
+
+      <div class="form-group">
+        <label for="namaAnak">Nama Anak <span style="color:red;">*</span></label>
+        <div style="display:flex; align-items:center;">
+          <input type="text" id="namaAnak" name="namaAnak" placeholder="Isi nama anak" required />
+          <button type="button" id="btnMic" title="Isi dengan suara">&#127908;</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tglLahirAnak">Tanggal Lahir <span style="color:red;">*</span></label>
+        <input type="date" id="tglLahirAnak" name="tglLahirAnak" required />
+      </div>
+
+      <div class="form-group">
+        <label for="usiaAnak">Usia</label>
+        <input type="text" id="usiaAnak" name="usiaAnak" readonly />
+      </div>
+
+      <div class="form-group">
+        <label for="jenisKelamin">Jenis Kelamin <span style="color:red;">*</span></label>
+        <select id="jenisKelamin" name="jenisKelamin" required>
+          <option value="">-- Pilih Jenis Kelamin --</option>
+          <option value="laki-laki">Laki-laki</option>
+          <option value="perempuan">Perempuan</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Simpan</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Tombol Kembali dan Keluar
+    document.getElementById('btnBack').addEventListener('click', () => {
+      window.location.href = "anak.html";
+    });
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+
+    // Ambil NIK login dan tampilkan
+    const nik = sessionStorage.getItem('nik');
+    if (!nik) {
+      alert("NIK tidak ditemukan, silakan login ulang.");
+      window.location.href = "login.html";
+    }
+    document.getElementById('nikTampil').textContent = "NIK Login: " + nik;
+
+    const namaAnakInput = document.getElementById('namaAnak');
+    const tglLahirAnakInput = document.getElementById('tglLahirAnak');
+    const usiaAnakInput = document.getElementById('usiaAnak');
+    const jenisKelaminSelect = document.getElementById('jenisKelamin');
+    const errorMessage = document.getElementById('errorMessage');
+    const btnMic = document.getElementById('btnMic');
+
+    // Fungsi hitung usia lengkap (tahun, bulan, hari)
+    function calculateAgeDetailed(birthdate) {
+      if (!birthdate) return "";
+      const today = new Date();
+      const birthDate = new Date(birthdate);
+
+      if (birthDate > today) return "";
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+      if (days < 0) {
+        months -= 1;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+
+      let result = "";
+      if (years > 0) result += years + " tahun";
+      if (months > 0) result += (result ? ", " : "") + months + " bulan";
+      if (days > 0) result += (result ? ", " : "") + days + " hari";
+
+      return result || "0 hari";
+    }
+
+    // Update usia saat tanggal lahir berubah
+    tglLahirAnakInput.addEventListener('change', () => {
+      usiaAnakInput.value = calculateAgeDetailed(tglLahirAnakInput.value);
+    });
+
+    // Load data anak jika sudah pernah disimpan
+    function loadDataAnak() {
+      const dataAnak = JSON.parse(localStorage.getItem(`data_anak_${nik}`) || '{}');
+      if (Object.keys(dataAnak).length > 0) {
+        namaAnakInput.value = dataAnak.namaAnak || "";
+        tglLahirAnakInput.value = dataAnak.tglLahirAnak || "";
+        usiaAnakInput.value = calculateAgeDetailed(dataAnak.tglLahirAnak) || "";
+        jenisKelaminSelect.value = dataAnak.jenisKelamin || "";
+      }
+    }
+
+    loadDataAnak();
+
+    // Speech Recognition untuk input nama anak
+    let recognition;
+    if ('webkitSpeechRecognition' in window) {
+      recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        btnMic.classList.add('recording');
+        btnMic.title = "Mendengarkan...";
+      };
+      recognition.onend = () => {
+        btnMic.classList.remove('recording');
+        btnMic.title = "Isi dengan suara";
+      };
+      recognition.onerror = (event) => {
+        alert('Error pada pengenalan suara: ' + event.error);
+      };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        namaAnakInput.value = transcript;
+      };
+    } else {
+      btnMic.disabled = true;
+      btnMic.title = "Browser tidak mendukung pengenalan suara";
+    }
+
+    btnMic.addEventListener('click', () => {
+      if (recognition) {
+        recognition.start();
+      }
+    });
+
+    // Validasi dan simpan data
+    document.getElementById('formAnak').addEventListener('submit', e => {
+      e.preventDefault();
+      errorMessage.style.display = 'none';
+
+      const namaAnak = namaAnakInput.value.trim();
+      const tglLahirAnak = tglLahirAnakInput.value;
+      const jenisKelamin = jenisKelaminSelect.value;
+      const usia = calculateAgeDetailed(tglLahirAnak);
+
+      let valid = true;
+      let messages = [];
+
+      if (!namaAnak) {
+        valid = false;
+        messages.push("Nama Anak harus diisi");
+      }
+      if (!tglLahirAnak) {
+        valid = false;
+        messages.push("Tanggal Lahir harus diisi");
+      }
+      if (!jenisKelamin) {
+        valid = false;
+        messages.push("Jenis Kelamin harus dipilih");
+      }
+      if (usia === "") {
+        valid = false;
+        messages.push("Tanggal Lahir tidak valid");
+      }
+
+      if (!valid) {
+        errorMessage.textContent = "Tolong lengkapi data: " + messages.join(", ");
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      // Simpan data ke localStorage sesuai NIK login
+      const dataAnak = {
+        nik, // <--- NIK login ikut disimpan
+        namaAnak,
+        tglLahirAnak,
+        usia,
+        jenisKelamin
+      };
+      localStorage.setItem(`data_anak_${nik}`, JSON.stringify(dataAnak));
+      alert("Data anak berhasil disimpan!");
+    });
+  </script>
+</body>
+</html>

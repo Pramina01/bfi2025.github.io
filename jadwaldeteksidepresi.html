@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jadwal Deteksi Depresi - PRAMINA</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff0f0;
+      color: #b71c1c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 15px 30px;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+      position: relative;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+      user-select: none;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin: 0;
+      flex-grow: 1;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin-top: 30px;
+      background: white;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      padding: 25px 20px;
+      box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      min-height: 250px;
+    }
+    .info-nik {
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #7f1212;
+    }
+    .info-item, .reminder {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #7f1212;
+      background: #ffeaea;
+      border-left: 6px solid #b71c1c;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(183,28,28,0.1);
+      user-select: none;
+    }
+    .label {
+      font-weight: 700;
+      color: #b71c1c;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    .date, .result, .next-schedule {
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .next-schedule {
+      font-weight: 700;
+      color: #388e3c;
+    }
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #b71c1c;
+      z-index: 5;
+      user-select: none;
+    }
+    @media (max-width: 360px) {
+      .info-nik {
+        font-size: 1.1rem;
+      }
+      .info-item, .reminder {
+        font-size: 1rem;
+        padding: 12px 16px;
+      }
+      .label {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+</header>
+
+<main>
+  <div class="loading-overlay" id="loadingOverlay">Memuat data...</div>
+
+  <div class="info-nik" id="nikDisplay">NIK: -</div>
+
+  <div class="reminder" id="reminderText">
+    Himbauan: Lakukan skrining deteksi depresi secara rutin setiap 1 bulan sekali untuk memantau kesehatan mental Anda dan mendapatkan analisis tingkat depresi.
+  </div>
+
+  <div id="contentArea">
+    <!-- Data terakhir pengisian dan jadwal pengisian ulang akan muncul di sini -->
+  </div>
+</main>
+
+<script>
+  const nik = sessionStorage.getItem('nik');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const nikDisplay = document.getElementById('nikDisplay');
+  const contentArea = document.getElementById('contentArea');
+
+  function formatDate(date) {
+    return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function addMonths(date, months) {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + months);
+    return d;
+  }
+
+  if (!nik) {
+    alert("NIK tidak ditemukan, silakan login ulang.");
+    window.location.href = "mobile.html";
+  } else {
+    nikDisplay.textContent = "NIK: " + nik;
+
+    loadingOverlay.style.display = 'flex';
+
+    const key = `deteksiDepresi_${nik}`;
+    const dataString = localStorage.getItem(key);
+
+    if (!dataString) {
+      loadingOverlay.style.display = 'none';
+      contentArea.innerHTML = '<div class="info-item">Belum ada data pengisian kuesioner deteksi depresi.</div>';
+    } else {
+      try {
+        const data = JSON.parse(dataString);
+        const tanggalPengisian = new Date(data.tanggalPengisian);
+        const hasilAnalisis = data.hasilAnalisis || '-';
+
+        const jadwalBerikutnya = addMonths(tanggalPengisian, 1);
+
+        loadingOverlay.style.display = 'none';
+
+        contentArea.innerHTML = `
+          <div class="info-item">
+            <div class="label">Terakhir Mengisi Kuesioner:</div>
+            <div class="date">${formatDate(tanggalPengisian)}</div>
+            <div class="label">Hasil Analisis:</div>
+            <div class="result">${hasilAnalisis}</div>
+            <div class="label">Jadwal Pengisian Berikutnya:</div>
+            <div class="next-schedule">${formatDate(jadwalBerikutnya)}</div>
+          </div>
+        `;
+      } catch (e) {
+        loadingOverlay.style.display = 'none';
+        contentArea.innerHTML = '<div class="info-item">Data kuesioner rusak atau tidak valid.</div>';
+      }
+    }
+  }
+</script>
+</body>
+</html>

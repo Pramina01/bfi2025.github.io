@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Imunisasi Anak - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    box-sizing: border-box;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form {
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  input[readonly] {
+    background-color: #f8dede;
+    cursor: not-allowed;
+  }
+  .imunisasi-group {
+    margin-bottom: 25px;
+  }
+  .imunisasi-group h3 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 6px;
+  }
+  .imunisasi-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .imunisasi-item label {
+    flex-grow: 1;
+    cursor: pointer;
+    user-select: none;
+  }
+  .imunisasi-item input[type="checkbox"] {
+    margin-right: 12px;
+    accent-color: #b71c1c;
+    cursor: pointer;
+  }
+  .imunisasi-item input[type="date"] {
+    margin-left: 10px;
+    padding: 4px 8px;
+    font-size: 0.95rem;
+    border: 1.5px solid #b71c1c;
+    border-radius: 6px;
+    color: #b71c1c;
+  }
+  button {
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background-color: #7f1212;
+  }
+  .error-message {
+    color: red;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+</header>
+
+<main>
+  <h2>Imunisasi Anak</h2>
+  <form id="formImunisasi" autocomplete="off" novalidate>
+    <div class="form-group">
+      <label for="nikInput">Masukkan NIK Anak</label>
+      <input type="text" id="nikInput" name="nikInput" placeholder="Masukkan NIK anak" required />
+    </div>
+    <div class="form-group">
+      <label for="tglLahirInput">Tanggal Lahir Anak</label>
+      <input type="date" id="tglLahirInput" name="tglLahirInput" required />
+    </div>
+    <div class="form-group">
+      <label for="usiaInput">Usia Anak</label>
+      <input type="text" id="usiaInput" name="usiaInput" readonly placeholder="Bulan, Hari" />
+    </div>
+
+    <div id="imunisasiList">
+      <!-- Imunisasi checklist akan di-generate di sini -->
+    </div>
+
+    <button type="submit">Simpan Data Imunisasi</button>
+    <div class="error-message" id="errorMessage"></div>
+  </form>
+</main>
+
+<script>
+  // Suara klik
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+
+  const nikInput = document.getElementById('nikInput');
+  const tglLahirInput = document.getElementById('tglLahirInput');
+  const usiaInput = document.getElementById('usiaInput');
+  const imunisasiListDiv = document.getElementById('imunisasiList');
+  const formImunisasi = document.getElementById('formImunisasi');
+  const errorMessage = document.getElementById('errorMessage');
+
+  // Daftar imunisasi sesuai usia
+  const imunisasiData = [
+    { usia: "Saat Lahir (0 bulan)", items: [
+      "Hepatitis B dosis pertama (Hep B 0)",
+      "Polio dosis pertama (Polio 0)",
+      "BCG (untuk mencegah tuberkulosis)"
+    ]},
+    { usia: "Usia 2 Bulan", items: [
+      "DPT-HB-Hib dosis pertama (vaksin kombinasi untuk Difteri, Pertusis, Tetanus, Hepatitis B, dan Haemophilus influenzae tipe b)",
+      "Polio dosis kedua (Polio 1)",
+      "Hepatitis B dosis kedua (Hepatitis B 1)",
+      "PCV dosis pertama (vaksin pneumokokus)",
+      "Rotavirus dosis pertama"
+    ]},
+    { usia: "Usia 3 Bulan", items: [
+      "DPT-HB-Hib dosis kedua",
+      "Polio dosis ketiga (Polio 2)",
+      "Hepatitis B dosis ketiga"
+    ]},
+    { usia: "Usia 4 Bulan", items: [
+      "DPT-HB-Hib dosis ketiga",
+      "Polio dosis keempat (Polio 3)",
+      "Hepatitis B dosis keempat",
+      "PCV dosis kedua",
+      "Rotavirus dosis kedua"
+    ]},
+    { usia: "Usia 6 Bulan", items: [
+      "PCV dosis ketiga",
+      "Rotavirus dosis ketiga (jika menggunakan vaksin pentavalen)",
+      "Influenza dosis pertama (opsional, mulai usia 6 bulan)"
+    ]},
+    { usia: "Usia 9 Bulan", items: [
+      "Imunisasi MR (Measles-Rubella) atau vaksin campak"
+    ]},
+    { usia: "Usia 18 Bulan", items: [
+      "Booster DPT-HB-Hib dosis keempat",
+      "Booster Polio dosis kelima",
+      "Booster Hepatitis B dosis kelima",
+      "Booster Hib dosis keempat (biasanya sudah termasuk dalam vaksin kombinasi)",
+      "Booster MR/MMR dosis kedua"
+    ]}
+  ];
+
+  // Fungsi hitung usia bulan, hari dari tgl lahir sampai hari ini
+  function calculateAge(birthDateStr) {
+    if (!birthDateStr) return "";
+    const birthDate = new Date(birthDateStr);
+    const today = new Date();
+    if (birthDate > today) return "";
+    let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+    let days = today.getDate() - birthDate.getDate();
+    if (days < 0) {
+      months -= 1;
+      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+    return `${months} bulan, ${days} hari`;
+  }
+
+  // Generate checklist imunisasi
+  function generateImunisasiChecklist(savedData = {}) {
+    imunisasiListDiv.innerHTML = "";
+    imunisasiData.forEach(section => {
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = "imunisasi-group";
+      const h3 = document.createElement('h3');
+      h3.textContent = section.usia;
+      sectionDiv.appendChild(h3);
+
+      section.items.forEach((item, idx) => {
+        const id = section.usia.replace(/\s+/g, '') + '_' + idx; // unique id
+        const savedItem = savedData[id] || {};
+        const imunisasiItemDiv = document.createElement('div');
+        imunisasiItemDiv.className = "imunisasi-item";
+
+        const checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.id = id;
+        checkbox.checked = savedItem.done || false;
+
+        const label = document.createElement('label');
+        label.htmlFor = id;
+        label.textContent = item;
+
+        const dateInput = document.createElement('input');
+        dateInput.type = "date";
+        dateInput.value = savedItem.date || "";
+        dateInput.disabled = !checkbox.checked;
+        dateInput.title = "Tanggal imunisasi";
+
+        // Enable/disable date input based on checkbox
+        checkbox.addEventListener('change', () => {
+          dateInput.disabled = !checkbox.checked;
+          if (!checkbox.checked) dateInput.value = "";
+        });
+
+        imunisasiItemDiv.appendChild(checkbox);
+        imunisasiItemDiv.appendChild(label);
+        imunisasiItemDiv.appendChild(dateInput);
+
+        sectionDiv.appendChild(imunisasiItemDiv);
+      });
+
+      imunisasiListDiv.appendChild(sectionDiv);
+    });
+  }
+
+  // Load saved data by nik
+  function loadDataByNik(nik) {
+    if (!nik) return;
+    const saved = localStorage.getItem(`imunisasi_${nik}`);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return {};
+  }
+
+  // Save data by nik
+  function saveDataByNik(nik, data) {
+    localStorage.setItem(`imunisasi_${nik}`, JSON.stringify(data));
+  }
+
+  // Update usia anak otomatis saat tanggal lahir diisi/ubah
+  tglLahirInput.addEventListener('change', () => {
+    usiaInput.value = calculateAge(tglLahirInput.value);
+  });
+
+  // Saat nik diisi, load data dan isi form
+  nikInput.addEventListener('change', () => {
+    const nik = nikInput.value.trim();
+    if (!nik) return;
+    const savedData = loadDataByNik(nik);
+    if (savedData.tglLahir) {
+      tglLahirInput.value = savedData.tglLahir;
+      usiaInput.value = calculateAge(savedData.tglLahir);
+    } else {
+      tglLahirInput.value = "";
+      usiaInput.value = "";
+    }
+    generateImunisasiChecklist(savedData.imunisasi || {});
+  });
+
+  // Form submit simpan data
+  formImunisasi.addEventListener('submit', e => {
+    e.preventDefault();
+    errorMessage.style.display = "none";
+
+    const nik = nikInput.value.trim();
+    const tglLahir = tglLahirInput.value;
+
+    if (!nik) {
+      errorMessage.textContent = "NIK harus diisi.";
+      errorMessage.style.display = "block";
+      return;
+    }
+    if (!tglLahir) {
+      errorMessage.textContent = "Tanggal lahir harus diisi.";
+      errorMessage.style.display = "block";
+      return;
+    }
+
+    // Kumpulkan data imunisasi
+    const imunisasiDataToSave = {};
+    const checkboxes = imunisasiListDiv.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      const dateInput = checkbox.parentElement.querySelector('input[type="date"]');
+      imunisasiDataToSave[checkbox.id] = {
+        done: checkbox.checked,
+        date: checkbox.checked ? dateInput.value : ""
+      };
+    });
+
+    // Simpan ke localStorage
+    const dataToSave = {
+      tglLahir,
+      imunisasi: imunisasiDataToSave
+    };
+    saveDataByNik(nik, dataToSave);
+
+    alert("Data imunisasi berhasil disimpan!");
+  });
+
+  // Inisialisasi form kosong di awal
+  generateImunisasiChecklist();
+
+</script>
+</body>
+</html>

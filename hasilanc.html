@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hasil ANC - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    box-sizing: border-box;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form.search-form {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  input[type="text"], select {
+    flex: 1 1 200px;
+    padding: 10px 12px;
+    font-size: 1.1rem;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  button.search-btn {
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 0 0 auto;
+  }
+  button.search-btn:hover {
+    background-color: #7f1212;
+  }
+  .analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .analysis-table th, .analysis-table td {
+    border: 2px solid #b71c1c;
+    padding: 10px;
+    text-align: center;
+    font-size: 1rem;
+  }
+  .analysis-table th {
+    background-color: #b71c1c;
+    color: white;
+    font-weight: 700;
+  }
+  .analysis-table td.analysis-result {
+    font-weight: 700;
+    color: #388e3c;
+  }
+  .analysis-table td.analysis-result.risk {
+    color: #d32f2f;
+  }
+  .analysis-table td.analysis-result.warning {
+    color: #ff9800;
+  }
+  .no-data {
+    text-align: center;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #7f1212;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+</header>
+
+<main>
+  <h2>Hasil ANC</h2>
+  <form id="searchForm" class="search-form" autocomplete="off" novalidate>
+    <input type="text" id="nikInput" placeholder="NIK (otomatis terisi login)" readonly />
+    <select id="kunjunganSelect" required>
+      <option value="">-- Pilih Kunjungan --</option>
+      <option value="1">Kunjungan 1</option>
+      <option value="2">Kunjungan 2</option>
+      <option value="3">Kunjungan 3</option>
+      <option value="4">Kunjungan 4</option>
+      <option value="5">Kunjungan 5</option>
+      <option value="6">Kunjungan 6</option>
+    </select>
+    <button type="submit" class="search-btn">Cari</button>
+  </form>
+
+  <div id="resultContainer"></div>
+</main>
+
+<script>
+  const nikInput = document.getElementById('nikInput');
+  const kunjunganSelect = document.getElementById('kunjunganSelect');
+  const searchForm = document.getElementById('searchForm');
+  const resultContainer = document.getElementById('resultContainer');
+
+  // Ambil NIK dari sessionStorage dan isi input
+  const nikLogin = sessionStorage.getItem('nik');
+  if (!nikLogin) {
+    alert('NIK tidak ditemukan, silakan login ulang.');
+    window.location.href = 'login.html';
+  } else {
+    nikInput.value = nikLogin;
+  }
+
+  function renderAnalysis(data) {
+    if (!data || Object.keys(data).length === 0) {
+      resultContainer.innerHTML = `<p class="no-data">Data analisis tidak ditemukan untuk NIK ${nikLogin} dan kunjungan ke-${kunjunganSelect.value}.</p>`;
+      return;
+    }
+    const a = data.analisis;
+    let html = `<table class="analysis-table">
+      <tr><th>Parameter</th><th>Nilai</th><th>Analisis</th></tr>
+      <tr><td>NIK</td><td>${data.nik}</td><td>-</td></tr>
+      <tr><td>Kunjungan Ke-</td><td>${data.kunjungan}</td><td>-</td></tr>
+      <tr><td>Umur (tahun)</td><td>${data.umur}</td><td>-</td></tr>
+      <tr><td>Usia Kehamilan (bulan)</td><td>${data.usiaKehamilan}</td><td>-</td></tr>
+      <tr><td>Tinggi Badan (cm)</td><td>${data.tinggiBadan}</td><td class="analysis-result ${a.tinggiBadan.kelas}">${a.tinggiBadan.hasil}</td></tr>
+      <tr><td>Berat Badan (kg)</td><td>${data.beratBadan}</td><td class="analysis-result ${a.beratBadan.kelas}">${a.beratBadan.hasil}</td></tr>
+      <tr><td>Kenaikan Berat Badan (kg)</td><td>${data.kenaikanBeratBadan}</td><td class="analysis-result ${a.kenaikanBeratBadan.kelas}">${a.kenaikanBeratBadan.hasil}</td></tr>
+      <tr><td>Tekanan Darah (/90 mmHg)</td><td>${data.tekananDarah}</td><td class="analysis-result ${a.tekananDarah.kelas}">${a.tekananDarah.hasil}</td></tr>
+      <tr><td>Lingkar Lengan Atas (cm)</td><td>${data.lingkarLenganAtas}</td><td class="analysis-result ${a.lingkarLenganAtas.kelas}">${a.lingkarLenganAtas.hasil}</td></tr>
+      <tr><td>Tinggi Fundus Uteri (cm)</td><td>${data.tinggiFundusUteri}</td><td class="analysis-result ${a.tinggiFundusUteri.kelas}">${a.tinggiFundusUteri.hasil}</td></tr>
+      <tr><td>Denyut Jantung Janin (/menit)</td><td>${data.denyutJantungJanin}</td><td class="analysis-result ${a.denyutJantungJanin.kelas}">${a.denyutJantungJanin.hasil}</td></tr>
+      <tr><td>Hemoglobin (g/dL)</td><td>${data.hemoglobin}</td><td class="analysis-result ${a.hemoglobin.kelas}">${a.hemoglobin.hasil}</td></tr>
+      <tr><td>Saran Dokter</td><td colspan="2" style="text-align:left;">${data.saranDokter}</td></tr>
+    </table>`;
+    resultContainer.innerHTML = html;
+  }
+
+  searchForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const kunjungan = kunjunganSelect.value;
+    if (!kunjungan) {
+      alert('Silakan pilih kunjungan.');
+      return;
+    }
+    const key = `catatanc_${nikLogin}_kunjungan_${kunjungan}`;
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    renderAnalysis(data);
+  });
+</script>
+</body>
+</html>
+`

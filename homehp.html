@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home PRAMINA - Mobile</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff0f0;
+      color: #b71c1c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 15px 30px;
+    }
+    header {
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(183,28,28,0.3);
+      padding: 12px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    header img {
+      height: 48px;
+      width: auto;
+      user-select: none;
+    }
+    .profile-container {
+      margin-top: 25px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px 25px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 6px 20px rgba(183,28,28,0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      min-height: 180px;
+    }
+    .profile-item {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #7f1212;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0dada;
+      padding-bottom: 8px;
+    }
+    .profile-label {
+      color: #b71c1c;
+    }
+    .notification {
+      margin-top: 25px;
+      background: #ffeaea;
+      border-left: 6px solid #b71c1c;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #7f1212;
+      font-weight: 600;
+      font-size: 1rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 4px 14px rgba(183,28,28,0.1);
+      user-select: none;
+    }
+    .menu-buttons {
+      margin-top: 30px;
+      max-width: 480px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .menu-button {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(183,28,28,0.15);
+      padding: 18px 10px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #b71c1c;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .menu-button:hover {
+      background-color: #b71c1c;
+      color: white;
+      box-shadow: 0 8px 25px rgba(127,18,18,0.7);
+    }
+    .menu-icon {
+      font-size: 36px;
+      transition: color 0.3s;
+    }
+    .menu-button:hover .menu-icon {
+      color: white;
+    }
+    @media (max-width: 360px) {
+      .profile-item {
+        font-size: 1.1rem;
+      }
+      .notification {
+        font-size: 0.95rem;
+      }
+      .menu-button {
+        font-size: 0.95rem;
+      }
+      .menu-icon {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+  </header>
+
+  <main aria-live="polite" aria-label="Data Profil Pengguna dan Menu">
+    <section class="profile-container">
+      <div class="profile-item"><span class="profile-label">NIK:</span> <span id="nikValue">-</span></div>
+      <div class="profile-item"><span class="profile-label">Nama:</span> <span id="namaValue">-</span></div>
+      <div class="profile-item"><span class="profile-label">Usia:</span> <span id="umurValue">-</span></div>
+      <div class="profile-item"><span class="profile-label">Alamat:</span> <span id="alamatValue">-</span></div>
+    </section>
+
+    <section class="notification" role="region" aria-live="polite" aria-atomic="true" id="notificationText">
+      Tidak ada notifikasi terbaru.
+    </section>
+
+    <nav class="menu-buttons" aria-label="Menu Layanan PRAMINA">
+      <a href="jadwalanc.html" class="menu-button" aria-label="Jadwal ANC">
+        <i class="fas fa-baby menu-icon" aria-hidden="true"></i>
+        Jadwal Anc
+      </a>
+      <a href="jadwaldeteksidepresi.html" class="menu-button" aria-label="Jadwal Deteksi Depresi">
+        <i class="fas fa-brain menu-icon" aria-hidden="true"></i>
+        Jadwal Deteksi Depresi
+      </a>
+      <a href="jadwalimunisasi.html" class="menu-button" aria-label="Jadwal Imunisasi">
+        <i class="fas fa-syringe menu-icon" aria-hidden="true"></i>
+        Jadwal Imunisasi
+      </a>
+      <a href="jadwalcekotorik.html" class="menu-button" aria-label="Jadwal Cek Motorik">
+        <i class="fas fa-running menu-icon" aria-hidden="true"></i>
+        Jadwal Cek Motorik
+      </a>
+    </nav>
+  </main>
+
+  <script>
+    const nik = sessionStorage.getItem('nik');
+    if (!nik) {
+      window.location.href = 'mobile.html';
+    } else {
+      const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbxsdCojzSCk88fCVXF7FXg0oU3RtQTKkPGcBBf9H678Zqb7C8pk7yPO0Qhwm1TTudU/exec';
+
+      fetch(`${URL_WEB_APP}?action=getProfile&nik=${encodeURIComponent(nik)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert('Data profil tidak ditemukan. Silakan login ulang.');
+            sessionStorage.removeItem('nik');
+            window.location.href = 'mobile.html';
+          } else {
+            document.getElementById('nikValue').textContent = nik;
+            document.getElementById('namaValue').textContent = data.nama || '-';
+            document.getElementById('umurValue').textContent = data.umur || '-';
+            document.getElementById('alamatValue').textContent = data.alamat || '-';
+
+            const notif = document.getElementById('notificationText');
+            notif.textContent = 'Selamat datang, ' + (data.nama || '') + '! Silahkan cek notifikasi dari PRAMINA.';
+          }
+        })
+        .catch(() => {
+          alert('Gagal mengambil data profil. Silakan coba lagi.');
+          sessionStorage.removeItem('nik');
+          window.location.href = 'mobile.html';
+        });
+    }
+  </script>
+</body>
+</html>

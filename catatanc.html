@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Catatan Hasil ANC - PRAMINA</title>
 <style>
+  /* Your existing styles unchanged */
   body {
     margin: 0; padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,6 +25,7 @@
     padding: 12px 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     box-sizing: border-box;
+    position: relative;
   }
   header img {
     height: 40px;
@@ -159,6 +161,7 @@
         <option value="6">Kunjungan 6</option>
       </select>
     </div>
+    <!-- The rest of your form fields remain unchanged -->
     <div class="form-group">
       <label for="umur">Umur (tahun)</label>
       <input type="number" id="umur" name="umur" min="10" max="60" required />
@@ -289,7 +292,7 @@
       return;
     }
 
-    // Analisis (sama seperti sebelumnya)
+    // Analisis
     const analisis = {};
     analisis.tinggiBadan = tinggiBadan < 145
       ? { hasil: "BERESIKO", kelas: "risk" }

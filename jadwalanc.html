@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jadwal ANC - PRAMINA</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff0f0;
+      color: #b71c1c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 15px 30px;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+      position: relative;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+      user-select: none;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin: 0;
+      flex-grow: 1;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin-top: 30px;
+      background: white;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      padding: 25px 20px;
+      box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      min-height: 250px;
+    }
+    .info-nik {
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #7f1212;
+    }
+    .jadwal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .jadwal-card {
+      background: #ffeaea;
+      border-left: 6px solid #b71c1c;
+      padding: 16px 20px;
+      border-radius: 12px;
+      color: #7f1212;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 4px 14px rgba(183,28,28,0.1);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .jadwal-label {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #b71c1c;
+    }
+    .jadwal-date {
+      font-style: italic;
+    }
+    .hari-tersisa {
+      font-weight: 700;
+    }
+    .hari-tersisa.hari-ini {
+      color: #d32f2f;
+    }
+    .hari-tersisa.akan-datang {
+      color: #388e3c;
+    }
+    .hari-tersisa.lewat {
+      color: #757575;
+    }
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #b71c1c;
+      z-index: 5;
+      user-select: none;
+    }
+    @media (max-width: 360px) {
+      .info-nik {
+        font-size: 1.1rem;
+      }
+      .jadwal-card {
+        font-size: 0.95rem;
+        padding: 14px 16px;
+      }
+      .jadwal-label {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+</header>
+
+<main>
+  <div class="loading-overlay" id="loadingOverlay">Memuat jadwal ANC...</div>
+
+  <div class="info-nik" id="nikDisplay">NIK: -</div>
+
+  <div class="jadwal-list" id="jadwalList">
+    <!-- Jadwal kunjungan akan muncul di sini -->
+  </div>
+</main>
+
+<script>
+  const nik = sessionStorage.getItem('nik');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const nikDisplay = document.getElementById('nikDisplay');
+  const jadwalList = document.getElementById('jadwalList');
+
+  if (!nik) {
+    alert("NIK tidak ditemukan, silakan login ulang.");
+    window.location.href = "mobile.html";
+  } else {
+    nikDisplay.textContent = "NIK: " + nik;
+
+    // Ambil data HPHT dari localStorage sesuai NIK
+    const antenatalKey = `antenatal_${nik}`;
+    const savedData = JSON.parse(localStorage.getItem(antenatalKey) || '{}');
+
+    loadingOverlay.style.display = 'flex';
+
+    if (savedData.hpht) {
+      generateJadwal(savedData.hpht);
+      loadingOverlay.style.display = 'none';
+    } else {
+      jadwalList.innerHTML = '<div class="jadwal-card">Data HPHT belum tersedia. Silakan isi di halaman Antenatal Care.</div>';
+      loadingOverlay.style.display = 'none';
+    }
+  }
+
+  function addWeeks(date, weeks) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + weeks * 7);
+    return d;
+  }
+
+  function formatDate(date) {
+    return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function daysDifference(date1, date2) {
+    const diffTime = date2.getTime() - date1.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  function generateJadwal(hpht) {
+    const kunjungan = [
+      { label: "Kunjungan 1", weeks: 4 },
+      { label: "Kunjungan 2", weeks: 8 },
+      { label: "Kunjungan 3", weeks: 12 },
+      { label: "Kunjungan 4", weeks: 28 },
+      { label: "Kunjungan 5", weeks: 32 },
+      { label: "Kunjungan 6", weeks: 36 }
+    ];
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    jadwalList.innerHTML = '';
+
+    kunjungan.forEach(k => {
+      const tanggalKunjungan = addWeeks(hpht, k.weeks);
+      const selisihHari = daysDifference(today, tanggalKunjungan);
+
+      const card = document.createElement('div');
+      card.className = 'jadwal-card';
+
+      const label = document.createElement('div');
+      label.className = 'jadwal-label';
+      label.textContent = k.label;
+
+      const tanggal = document.createElement('div');
+      tanggal.className = 'jadwal-date';
+      tanggal.textContent = formatDate(tanggalKunjungan);
+
+      const hariTersisa = document.createElement('div');
+      hariTersisa.className = 'hari-tersisa';
+
+      if (selisihHari === 0) {
+        hariTersisa.textContent = "Hari ini";
+        hariTersisa.classList.add('hari-ini');
+      } else if (selisihHari > 0) {
+        hariTersisa.textContent = selisihHari + " hari lagi";
+        hariTersisa.classList.add('akan-datang');
+      } else {
+        hariTersisa.textContent = "Lewat " + Math.abs(selisihHari) + " hari";
+        hariTersisa.classList.add('lewat');
+      }
+
+      card.appendChild(label);
+      card.appendChild(tanggal);
+      card.appendChild(hariTersisa);
+
+      jadwalList.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>

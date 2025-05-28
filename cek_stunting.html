@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Data Anak - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    color: #b71c1c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+    flex-grow: 1;
+  }
+  #btnBack, #btnLogout {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #btnBack {
+    right: 130px;
+  }
+  #btnLogout {
+    right: 20px;
+  }
+  #btnBack:hover, #btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 700px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px 30px;
+    align-items: center;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  input[type="number"], select {
+    padding: 10px 12px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  button {
+    grid-column: 1 / -1;
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background-color: #7f1212;
+  }
+  .analysis {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    background: #fff;
+    padding: 20px;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+  }
+  .history {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    overflow-x: auto;
+  }
+  .history table {
+    min-width: 900px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: none;
+    table-layout: auto;
+  }
+  th, td {
+    border: 1.5px solid #b71c1c;
+    padding: 8px;
+    text-align: center;
+    background: none;
+    white-space: nowrap;
+  }
+  th {
+    background: #b71c1c;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .status-normal { color: #388e3c; font-weight: bold; }
+  .status-warning { color: #ff9800; font-weight: bold; }
+  .status-danger { color: #d32f2f; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <h2>Input Data Anak</h2>
+  <form id="childForm" autocomplete="off" novalidate>
+    <div class="form-group">
+      <label for="umur">Umur Anak (bulan)</label>
+      <input type="number" id="umur" name="umur" min="0" max="60" required />
+    </div>
+
+    <div class="form-group">
+      <label for="jenisKelamin">Jenis Kelamin</label>
+      <select id="jenisKelamin" name="jenisKelamin" required>
+        <option value="" disabled selected>Pilih jenis kelamin</option>
+        <option value="laki-laki">Laki-laki</option>
+        <option value="perempuan">Perempuan</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tinggiBadan">Tinggi Badan (cm)</label>
+      <input type="number" id="tinggiBadan" name="tinggiBadan" min="30" max="150" required />
+    </div>
+
+    <div class="form-group">
+      <label for="beratBadan">Berat Badan (kg)</label>
+      <input type="number" id="beratBadan" name="beratBadan" min="1" max="50" step="0.01" required />
+    </div>
+
+    <div class="form-group">
+      <label for="lingkarKepala">Lingkar Kepala (cm)</label>
+      <input type="number" id="lingkarKepala" name="lingkarKepala" min="20" max="60" step="0.1" required />
+    </div>
+
+    <div class="form-group">
+      <label for="lingkarLenganAtas">Lingkar Lengan Atas (cm)</label>
+      <input type="number" id="lingkarLenganAtas" name="lingkarLenganAtas" min="10" max="40" step="0.1" required />
+    </div>
+
+    <button type="submit">Simpan dan Analisis</button>
+  </form>
+
+  <div class="analysis" id="analysisSection" style="display:none;">
+    <h2>Hasil Analisis Terbaru</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Nilai</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="analysisBody"></tbody>
+    </table>
+  </div>
+
+  <div class="history" id="historySection" style="display:none;">
+    <h2>Riwayat Data Anak</h2>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal Input</th>
+            <th>Umur (bulan)</th>
+            <th>Jenis Kelamin</th>
+            <th>Tinggi Badan (cm)</th>
+            <th>Status TB/U</th>
+            <th>Berat Badan (kg)</th>
+            <th>Status BB/U</th>
+            <th>Lingkar Kepala (cm)</th>
+            <th>Status Lingkar Kepala</th>
+            <th>Lingkar Lengan Atas (cm)</th>
+            <th>Status Lingkar Lengan Atas</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Tombol kembali & keluar dengan jarak lebih rapih
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = 'anak.html';
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // Ambil NIK login dari sessionStorage
+  const nikLogin = sessionStorage.getItem('nik');
+  if (!nikLogin) {
+    alert('NIK tidak ditemukan, silakan login ulang.');
+    window.location.href = 'login.html';
+  }
+
+  // Simplified thresholds for demo (replace with real WHO data for production)
+  const heightForAgeThresholds = {
+    0: { severe: 45, moderate: 48 },
+    1: { severe: 50, moderate: 53 },
+    2: { severe: 54, moderate: 57 },
+    3: { severe: 57, moderate: 60 },
+    4: { severe: 60, moderate: 63 },
+    5: { severe: 62, moderate: 66 },
+    6: { severe: 64, moderate: 68 },
+    7: { severe: 66, moderate: 70 },
+    8: { severe: 67, moderate: 71 },
+    9: { severe: 69, moderate: 73 },
+    10:{ severe: 70, moderate: 74 },
+    11:{ severe: 71, moderate: 75 },
+    12:{ severe: 72, moderate: 76 },
+    13:{ severe: 73, moderate: 77 },
+    14:{ severe: 74, moderate: 78 },
+    15:{ severe: 75, moderate: 79 },
+    16:{ severe: 76, moderate: 80 },
+    17:{ severe: 77, moderate: 81 },
+    18:{ severe: 78, moderate: 82 },
+    19:{ severe: 79, moderate: 83 },
+    20:{ severe: 80, moderate: 84 },
+    21:{ severe: 81, moderate: 85 },
+    22:{ severe: 82, moderate: 86 },
+    23:{ severe: 83, moderate: 87 },
+    24:{ severe: 84, moderate: 88 },
+  };
+
+  const weightForAgeThresholds = {
+    0: { underweight: 2.5, normalLow: 3.5, normalHigh: 5 },
+    1: { underweight: 3.5, normalLow: 4.5, normalHigh: 6 },
+    2: { underweight: 4, normalLow: 5, normalHigh: 7 },
+    3: { underweight: 4.5, normalLow: 5.5, normalHigh: 7.5 },
+    4: { underweight: 5, normalLow: 6, normalHigh: 8 },
+    5: { underweight: 5.5, normalLow: 6.5, normalHigh: 8.5 },
+    6: { underweight: 6, normalLow: 7, normalHigh: 9 },
+    7: { underweight: 6.5, normalLow: 7.5, normalHigh: 9.5 },
+    8: { underweight: 7, normalLow: 8, normalHigh: 10 },
+    9: { underweight: 7.5, normalLow: 8.5, normalHigh: 10.5 },
+    10:{ underweight: 8, normalLow: 9, normalHigh: 11 },
+    11:{ underweight: 8.5, normalLow: 9.5, normalHigh: 11.5 },
+    12:{ underweight: 9, normalLow: 10, normalHigh: 12 },
+    13:{ underweight: 9.2, normalLow: 10.2, normalHigh: 12.4 },
+    14:{ underweight: 9.4, normalLow: 10.4, normalHigh: 12.6 },
+    15:{ underweight: 9.6, normalLow: 10.6, normalHigh: 12.8 },
+    16:{ underweight: 9.8, normalLow: 10.8, normalHigh: 13 },
+    17:{ underweight: 10, normalLow: 11, normalHigh: 13.2 },
+    18:{ underweight: 10.2, normalLow: 11.2, normalHigh: 13.4 },
+    19:{ underweight: 10.4, normalLow: 11.4, normalHigh: 13.6 },
+    20:{ underweight: 10.6, normalLow: 11.6, normalHigh: 13.8 },
+    21:{ underweight: 10.8, normalLow: 11.8, normalHigh: 14 },
+    22:{ underweight: 11, normalLow: 12, normalHigh: 14.2 },
+    23:{ underweight: 11.2, normalLow: 12.2, normalHigh: 14.4 },
+    24:{ underweight: 11.4, normalLow: 12.4, normalHigh: 14.6 },
+  };
+
+  const HEAD_CIRCUMFERENCE_THRESHOLD = 44;
+  const ARM_CIRCUMFERENCE_THRESHOLD = 13.5;
+
+  function analyzeHeightForAge(ageMonths, height) {
+    const thresholds = heightForAgeThresholds[ageMonths] || heightForAgeThresholds[24];
+    if (height < thresholds.severe) return { status: 'Stunting Berat', class: 'status-danger' };
+    if (height < thresholds.moderate) return { status: 'Stunting', class: 'status-warning' };
+    return { status: 'Normal', class: 'status-normal' };
+  }
+
+  function analyzeWeightForAge(ageMonths, weight) {
+    const thresholds = weightForAgeThresholds[ageMonths] || weightForAgeThresholds[24];
+    if (weight < thresholds.underweight) return { status: 'Berat Badan Sangat Kurang', class: 'status-danger' };
+    if (weight < thresholds.normalLow) return { status: 'Berat Badan Kurang', class: 'status-warning' };
+    if (weight <= thresholds.normalHigh) return { status: 'Normal', class: 'status-normal' };
+    return { status: 'Berat Badan Berlebih', class: 'status-warning' };
+  }
+
+  function analyzeHeadCircumference(value) {
+    if (value < HEAD_CIRCUMFERENCE_THRESHOLD) return { status: 'Risiko Malnutrisi', class: 'status-danger' };
+    return { status: 'Normal', class: 'status-normal' };
+  }
+
+  function analyzeArmCircumference(value) {
+    if (value < ARM_CIRCUMFERENCE_THRESHOLD) return { status: 'Risiko Malnutrisi', class: 'status-danger' };
+    return { status: 'Normal', class: 'status-normal' };
+  }
+
+  function formatDate(date) {
+    return new Date(date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  const form = document.getElementById('childForm');
+  const analysisSection = document.getElementById('analysisSection');
+  const analysisBody = document.getElementById('analysisBody');
+  const historySection = document.getElementById('historySection');
+  const historyBody = document.getElementById('historyBody');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const umur = parseInt(form.umur.value);
+    const jenisKelamin = form.jenisKelamin.value;
+    const tinggiBadan = parseFloat(form.tinggiBadan.value);
+    const beratBadan = parseFloat(form.beratBadan.value);
+    const lingkarKepala = parseFloat(form.lingkarKepala.value);
+    const lingkarLenganAtas = parseFloat(form.lingkarLenganAtas.value);
+
+    if (isNaN(umur) || !jenisKelamin || isNaN(tinggiBadan) || isNaN(beratBadan) || isNaN(lingkarKepala) || isNaN(lingkarLenganAtas)) {
+      alert("Mohon isi semua data dengan benar.");
+      return;
+    }
+
+    const heightStatus = analyzeHeightForAge(umur, tinggiBadan);
+    const weightStatus = analyzeWeightForAge(umur, beratBadan);
+    const headCircStatus = analyzeHeadCircumference(lingkarKepala);
+    const armCircStatus = analyzeArmCircumference(lingkarLenganAtas);
+
+    const entry = {
+      date: new Date().toISOString(),
+      umur,
+      jenisKelamin,
+      tinggiBadan,
+      beratBadan,
+      lingkarKepala,
+      lingkarLenganAtas,
+      analysis: {
+        heightStatus,
+        weightStatus,
+        headCircStatus,
+        armCircStatus
+      }
+    };
+
+    const key = `child_data_${nikLogin}`;
+    let data = JSON.parse(localStorage.getItem(key) || '[]');
+    data.push(entry);
+    localStorage.setItem(key, JSON.stringify(data));
+
+    displayLatestAnalysis(entry);
+    displayHistory(data);
+
+    form.umur.value = '';
+    form.jenisKelamin.value = '';
+    form.tinggiBadan.value = '';
+    form.beratBadan.value = '';
+    form.lingkarKepala.value = '';
+    form.lingkarLenganAtas.value = '';
+  });
+
+  function displayLatestAnalysis(entry) {
+    analysisSection.style.display = 'block';
+    analysisBody.innerHTML = `
+      <tr><td>Umur (bulan)</td><td>${entry.umur}</td><td>-</td></tr>
+      <tr><td>Jenis Kelamin</td><td>${entry.jenisKelamin === 'laki-laki' ? 'Laki-laki' : 'Perempuan'}</td><td>-</td></tr>
+      <tr><td>Tinggi Badan (cm)</td><td>${entry.tinggiBadan.toFixed(1)}</td><td class="${entry.analysis.heightStatus.class}">${entry.analysis.heightStatus.status}</td></tr>
+      <tr><td>Berat Badan (kg)</td><td>${entry.beratBadan.toFixed(2)}</td><td class="${entry.analysis.weightStatus.class}">${entry.analysis.weightStatus.status}</td></tr>
+      <tr><td>Lingkar Kepala (cm)</td><td>${entry.lingkarKepala.toFixed(1)}</td><td class="${entry.analysis.headCircStatus.class}">${entry.analysis.headCircStatus.status}</td></tr>
+      <tr><td>Lingkar Lengan Atas (cm)</td><td>${entry.lingkarLenganAtas.toFixed(1)}</td><td class="${entry.analysis.armCircStatus.class}">${entry.analysis.armCircStatus.status}</td></tr>
+    `;
+  }
+
+  function displayHistory(data) {
+    historySection.style.display = 'block';
+    historyBody.innerHTML = '';
+    data.slice().reverse().forEach(entry => {
+      const dateStr = formatDate(entry.date);
+      historyBody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${dateStr}</td>
+          <td>${entry.umur}</td>
+          <td>${entry.jenisKelamin === 'laki-laki' ? 'Laki-laki' : 'Perempuan'}</td>
+          <td>${entry.tinggiBadan.toFixed(1)}</td>
+          <td class="${entry.analysis.heightStatus.class}">${entry.analysis.heightStatus.status}</td>
+          <td>${entry.beratBadan.toFixed(2)}</td>
+          <td class="${entry.analysis.weightStatus.class}">${entry.analysis.weightStatus.status}</td>
+          <td>${entry.lingkarKepala.toFixed(1)}</td>
+          <td class="${entry.analysis.headCircStatus.class}">${entry.analysis.headCircStatus.status}</td>
+          <td>${entry.lingkarLenganAtas.toFixed(1)}</td>
+          <td class="${entry.analysis.armCircStatus.class}">${entry.analysis.armCircStatus.status}</td>
+        </tr>
+      `);
+    });
+  }
+
+  window.addEventListener('load', () => {
+    const data = JSON.parse(localStorage.getItem(`child_data_${nikLogin}`) || '[]');
+    if (data.length > 0) {
+      displayLatestAnalysis(data[data.length - 1]);
+      displayHistory(data);
+    }
+  });
+</script>
+
+</body>
+</html>

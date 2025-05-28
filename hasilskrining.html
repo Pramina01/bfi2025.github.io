@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hasil Skrining - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form.search-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    justify-content: center;
+  }
+  input[type="text"] {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 1.1rem;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    color: #b71c1c;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: #7f1212;
+  }
+  button.search-btn {
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button.search-btn:hover {
+    background-color: #7f1212;
+  }
+  .analysis-card {
+    background: #fff;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(183,28,28,0.1);
+  }
+  .analysis-card .date {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #7f1212;
+    margin-bottom: 10px;
+  }
+  .analysis-card .status {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .analysis-card .status.buruk { color: #d32f2f; }
+  .analysis-card .status.beresiko { color: #ff9800; }
+  .analysis-card .status.aman { color: #388e3c; }
+  .analysis-card .recommendation {
+    font-size: 1rem;
+  }
+  .no-data {
+    text-align: center;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #7f1212;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+  </header>
+
+  <main>
+    <h2>Cari Hasil Skrining</h2>
+    <form id="searchForm" class="search-form" autocomplete="off" novalidate>
+      <input type="text" id="nikInput" name="nikInput" placeholder="Masukkan NIK atau Kode Unik" required />
+      <button type="submit" class="search-btn">Cari</button>
+    </form>
+
+    <div id="resultContainer">
+      <!-- Hasil skrining akan tampil di sini -->
+    </div>
+  </main>
+
+  <script>
+    const searchForm = document.getElementById('searchForm');
+    const nikInput = document.getElementById('nikInput');
+    const resultContainer = document.getElementById('resultContainer');
+
+    function getRecommendation(status) {
+      if (status === "buruk") return "Segera lakukan kunjungan ke dokter untuk pemeriksaan lebih lanjut.";
+      if (status === "beresiko") return "Tetap pantau kesehatan Anda secara rutin dan konsultasikan jika ada perubahan.";
+      return "Selalu jaga kesehatan Anda dan lakukan pemeriksaan rutin.";
+    }
+
+    function renderResults(history) {
+      if (!history || history.length === 0) {
+        resultContainer.innerHTML = `<p class="no-data">Data hasil skrining tidak ditemukan untuk NIK tersebut.</p>`;
+        return;
+      }
+      let html = '';
+      history.slice().reverse().forEach(item => {
+        const dateStr = new Date(item.date).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+        html += `
+          <div class="analysis-card">
+            <div class="date">Pengisian: ${dateStr}</div>
+            <div class="status ${item.status}">Status: ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</div>
+            <div class="recommendation"><b>Rekomendasi:</b> ${getRecommendation(item.status)}</div>
+          </div>
+        `;
+      });
+      resultContainer.innerHTML = html;
+    }
+
+    searchForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const nik = nikInput.value.trim();
+      if (!nik) {
+        alert("Mohon masukkan NIK atau kode unik.");
+        return;
+      }
+      const history = JSON.parse(localStorage.getItem(`skrining_history_${nik}`) || "[]");
+      renderResults(history);
+    });
+  </script>
+</body>
+</html>

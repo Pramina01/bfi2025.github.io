@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skrining Kesehatan Ibu - PRAMINA</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #b71c1c;
+      min-height: 100vh;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      flex-grow: 1;
+    }
+    #btnBack, #btnLogout {
+      background-color: white;
+      color: #b71c1c;
+      border: 2px solid white;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      margin-left: 10px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #btnBack { right: 100px; }
+    #btnLogout { right: 20px; }
+    #btnBack:hover, #btnLogout:hover {
+      background-color: #7f1212;
+      color: white;
+      border-color: white;
+    }
+    main {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      min-height: 90vh;
+      box-sizing: border-box;
+      padding: 30px 0;
+      gap: 24px;
+    }
+    .left-panel, .right-panel {
+      background: #fff0f0;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(183,28,28,0.1);
+      padding: 30px 20px;
+      width: 410px;
+      min-width: 290px;
+      max-width: 95vw;
+      box-sizing: border-box;
+    }
+    .left-panel h2 {
+      text-align: center;
+      font-size: 1.3rem;
+      margin-bottom: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .question {
+      margin-bottom: 18px;
+    }
+    .question label {
+      font-weight: 600;
+      margin-bottom: 7px;
+      display: block;
+      color: #b71c1c;
+    }
+    .choices {
+      display: flex;
+      gap: 18px;
+      margin-top: 7px;
+    }
+    .choices label {
+      font-weight: 500;
+      color: #b71c1c;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .choices input[type="radio"] {
+      margin-right: 7px;
+      accent-color: #b71c1c;
+    }
+    .form-actions {
+      text-align: right;
+      margin-top: 30px;
+    }
+    button[type="submit"] {
+      background-color: #b71c1c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 32px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      letter-spacing: 1px;
+    }
+    button[type="submit"]:hover {
+      background-color: #7f1212;
+    }
+    .error-message {
+      color: red;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-height: 300px;
+      gap: 18px;
+    }
+    .nik-info {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #b71c1c;
+      margin-bottom: 10px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1.5px solid #b71c1c;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .chart-container {
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 8px 2px 8px;
+      margin-bottom: 10px;
+      border: 1px solid #b71c1c;
+      min-height: 110px;
+    }
+    .analysis-history {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+    .analysis-card {
+      background: #fff;
+      border: 1.5px solid #b71c1c;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      padding: 15px 16px 12px 16px;
+      box-shadow: 0 2px 6px rgba(183,28,28,0.06);
+    }
+    .analysis-card .date {
+      font-size: 0.96rem;
+      color: #a00;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .analysis-card .status {
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .analysis-card .status.buruk { color: #d32f2f; }
+    .analysis-card .status.beresiko { color: #ff9800; }
+    .analysis-card .status.aman { color: #388e3c; }
+    .analysis-card .recommendation {
+      font-size: 0.98rem;
+      margin-bottom: 2px;
+    }
+    @media (max-width: 980px) {
+      main {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 0;
+      }
+      .left-panel, .right-panel { width: 98vw; min-width: 0; }
+      .chart-container { min-height: 90px; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+    <button id="btnBack" title="Kembali">Kembali</button>
+    <button id="btnLogout" title="Keluar">Keluar</button>
+  </header>
+
+  <main>
+    <!-- Panel Kiri: Kuesioner -->
+    <section class="left-panel">
+      <h2>Skrining Kesehatan Ibu</h2>
+      <form id="skriningForm" autocomplete="off" novalidate>
+        <div class="error-message" id="errorMessage" style="display:none;"></div>
+        <div id="questions"></div>
+        <div class="form-actions">
+          <button type="submit">Kirim Jawaban</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Panel Kanan: Hasil Analisis & Grafik -->
+    <section class="right-panel">
+      <div id="nikTampil" class="nik-info"></div>
+      <div class="chart-container">
+        <canvas id="statusChart" width="390" height="100" aria-label="Grafik Status Kesehatan" role="img"></canvas>
+      </div>
+      <div class="analysis-history" id="analysisHistory">
+        <!-- Hasil analisis akan tampil di sini -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Header tombol back/logout
+    document.getElementById('btnBack').addEventListener('click', () => {
+      window.location.href = "ibu.html";
+    });
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+
+    // Soal kuesioner
+    const questionsList = [
+      "Apakah Anda mengalami pendarahan atau flek dari vagina selama kehamilan?",
+      "Apakah Anda merasakan nyeri hebat di perut atau panggul?",
+      "Apakah Anda merasakan penurunan gerakan janin setelah usia kehamilan 20 minggu?",
+      "Apakah Anda mengalami pembengkakan yang tidak biasa pada tangan, kaki, atau wajah?",
+      "Apakah Anda mengalami sakit kepala berat atau penglihatan kabur?",
+      "Apakah Anda mengalami demam tinggi selama kehamilan?",
+      "Apakah Anda mengalami keluarnya cairan vagina yang berbau tidak sedap atau disertai gatal?",
+      "Apakah Anda memiliki riwayat penyakit kronis seperti diabetes, hipertensi, atau gangguan jantung?",
+      "Apakah Anda mengalami penurunan berat badan yang signifikan atau tidak nafsu makan?",
+      "Apakah Anda mengalami sesak napas atau pembengkakan tungkai yang berat?"
+    ];
+
+    // Render soal
+    const questionsDiv = document.getElementById('questions');
+    questionsList.forEach((q, idx) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      qDiv.innerHTML = `
+        <label for="q${idx}">${idx+1}. ${q}</label>
+        <div class="choices">
+          <label><input type="radio" name="q${idx}" value="iya" required />Iya</label>
+          <label><input type="radio" name="q${idx}" value="tidak" />Tidak</label>
+        </div>
+      `;
+      questionsDiv.appendChild(qDiv);
+    });
+
+    // Ambil NIK
+    const nik = sessionStorage.getItem('nik');
+    if (!nik) {
+      alert("NIK tidak ditemukan, silakan login ulang.");
+      window.location.href = "login.html";
+    }
+    // Tampilkan NIK di atas grafik
+    document.getElementById('nikTampil').textContent = "NIK Login: " + nik;
+
+    // Kunci penyimpanan
+    const STORAGE_KEY = `skrining_history_${nik}`;
+
+    // Fungsi penilaian
+    function calculateScore(answers) {
+      let score = 0;
+      answers.forEach(ans => {
+        if (ans === "tidak") score += 1; // Tidak = 1, Iya = 0
+      });
+      return score;
+    }
+    function getStatus(score) {
+      if (score < 5) return "buruk";
+      if (score < 8) return "beresiko";
+      return "aman";
+    }
+    function getRecommendation(status) {
+      if (status === "buruk") return "Segera lakukan kunjungan ke dokter untuk pemeriksaan lebih lanjut.";
+      if (status === "beresiko") return "Tetap pantau kesehatan Anda secara rutin dan konsultasikan jika ada perubahan.";
+      return "Selalu jaga kesehatan Anda dan lakukan pemeriksaan rutin.";
+    }
+    function getStatusColor(status) {
+      if (status === "buruk") return "#d32f2f";
+      if (status === "beresiko") return "#ff9800";
+      return "#388e3c";
+    }
+
+    // Tampilkan hasil analisis
+    function renderAnalysis(history) {
+      const container = document.getElementById('analysisHistory');
+      container.innerHTML = "";
+      if (!history || history.length === 0) {
+        container.innerHTML = `<div style="text-align:center;color:#b71c1c;font-weight:600;">Belum ada riwayat skrining.</div>`;
+        return;
+      }
+      history.slice().reverse().forEach((item, idx) => {
+        const dateStr = new Date(item.date).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+        const card = document.createElement('div');
+        card.className = 'analysis-card';
+        card.innerHTML = `
+          <div class="date">Pengisian: ${dateStr}</div>
+          <div class="status ${item.status}">Status: ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</div>
+          <div class="recommendation"><b>Rekomendasi:</b> ${getRecommendation(item.status)}</div>
+        `;
+
+        // Tambahkan tombol "Buat Rujukan" untuk status buruk dan beresiko
+        if (item.status === "buruk" || item.status === "beresiko") {
+          const btnRujukan = document.createElement('button');
+          btnRujukan.textContent = "Buat Rujukan";
+          btnRujukan.style.marginTop = "10px";
+          btnRujukan.style.backgroundColor = "#b71c1c";
+          btnRujukan.style.color = "white";
+          btnRujukan.style.border = "none";
+          btnRujukan.style.padding = "8px 14px";
+          btnRujukan.style.borderRadius = "6px";
+          btnRujukan.style.cursor = "pointer";
+          btnRujukan.style.fontWeight = "700";
+          btnRujukan.style.letterSpacing = "1px";
+          btnRujukan.addEventListener('click', () => {
+            window.location.href = "rujukan.html";
+          });
+          card.appendChild(btnRujukan);
+        }
+
+        if (idx === 0) card.style.borderWidth = "2.5px";
+        container.appendChild(card);
+      });
+    }
+
+    // Grafik status
+    let chart;
+    function renderChart(history) {
+      const ctx = document.getElementById('statusChart').getContext('2d');
+      const labels = history.map((item, idx) => `#${idx+1}`);
+      const statusMap = { "buruk": 0, "beresiko": 1, "aman": 2 };
+      const statusLabels = ["Buruk", "Beresiko", "Aman"];
+      const data = history.map(item => statusMap[item.status]);
+      const bgColors = history.map(item => getStatusColor(item.status));
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Status Skrining',
+            data: data,
+            backgroundColor: bgColors,
+            borderRadius: 7,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return statusLabels[context.parsed.y];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 2,
+              ticks: {
+                callback: function(value) {
+                  return statusLabels[value];
+                },
+                stepSize: 1,
+                color: "#b71c1c",
+                font: { weight: "bold" }
+              },
+              grid: { color: "#f8dede" }
+            },
+            x: {
+              grid: { color: "#f8dede" },
+              ticks: { color: "#b71c1c", font: { weight: "bold" } }
+            }
+          }
+        }
+      });
+    }
+
+    // Load history dari localStorage
+    function loadHistory() {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(data) ? data : [];
+    }
+    function saveHistory(history) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    }
+
+    // Tampilkan hasil awal
+    let history = loadHistory();
+    renderAnalysis(history);
+    renderChart(history);
+
+    // Proses submit form
+    document.getElementById('skriningForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.style.display = "none";
+
+      // Ambil jawaban
+      const answers = [];
+      for (let i = 0; i < questionsList.length; i++) {
+        const val = (document.querySelector(`input[name="q${i}"]:checked`) || {}).value;
+        if (!val) {
+          errorMessage.textContent = "Semua pertanyaan wajib dijawab.";
+          errorMessage.style.display = "block";
+          return;
+        }
+        answers.push(val);
+      }
+
+      // Hitung skor & status
+      const score = calculateScore(answers);
+      const status = getStatus(score);
+
+      // Simpan ke history, tambahkan nik
+      const newEntry = {
+        date: Date.now(),
+        nik: nik, // NIK login ikut disimpan
+        answers,
+        score,
+        status
+      };
+      history.push(newEntry);
+      saveHistory(history);
+
+      // Tampilkan hasil
+      renderAnalysis(history);
+      renderChart(history);
+
+      // Reset form
+      this.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>

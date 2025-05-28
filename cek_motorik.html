@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cek Motorik Anak - PRAMINA</title>
+<style>
+  /* ... (CSS sama seperti sebelumnya, tidak berubah) ... */
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff0f0;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  button#btnBack, button#btnLogout {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  button#btnBack {
+    right: 100px;
+  }
+  button#btnLogout {
+    right: 20px;
+  }
+  button#btnBack:hover, button#btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px 15px 40px 15px;
+    background: #fff;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+  }
+  label {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  input[type="date"] {
+    padding: 10px 12px;
+    font-size: 1.1rem;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    color: #b71c1c;
+    width: 200px;
+    margin-top: 6px;
+  }
+  #ageDisplay {
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #388e3c;
+  }
+  #statusMotorik {
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+  #statusMotorik.tercapai {
+    color: #388e3c;
+  }
+  #statusMotorik.belum {
+    color: #d32f2f;
+  }
+  #motorikList {
+    margin-top: 25px;
+    max-height: 600px;
+    overflow-y: auto;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 15px 20px;
+    background: #fff0f0;
+  }
+  .bulan-group {
+    margin-bottom: 25px;
+  }
+  .bulan-group h3 {
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 6px;
+  }
+  .motorik-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .motorik-item input[type="checkbox"] {
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: #b71c1c;
+  }
+  .motorik-item label {
+    flex-grow: 1;
+    user-select: none;
+  }
+  button#btnSimpan {
+    margin-top: 15px;
+    align-self: center;
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button#btnSimpan:hover {
+    background-color: #7f1212;
+  }
+  #riwayatSection {
+    margin-top: 40px;
+  }
+  #riwayatSection h2 {
+    margin-bottom: 20px;
+  }
+  #riwayatTable {
+    width: 100%;
+    border-collapse: collapse;
+    max-height: 300px;
+    overflow-y: auto;
+    display: block;
+  }
+  #riwayatTable thead, #riwayatTable tbody {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  #riwayatTable tbody {
+    height: 300px;
+    overflow-y: auto;
+  }
+  #riwayatTable th, #riwayatTable td {
+    border: 1.5px solid #b71c1c;
+    padding: 8px;
+    text-align: center;
+    background: white;
+    word-wrap: break-word;
+  }
+  #riwayatTable th {
+    background-color: #b71c1c;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .status-tercapai {
+    color: #388e3c;
+    font-weight: 700;
+  }
+  .status-belum {
+    color: #d32f2f;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <h2>Cek Pencapaian Motorik Anak</h2>
+  <label for="tglLahirInput">Tanggal Lahir Anak:</label>
+  <input type="date" id="tglLahirInput" max="" />
+  <div id="ageDisplay"></div>
+  <div id="statusMotorik" class="belum"></div>
+
+  <div id="motorikList"></div>
+  <button id="btnSimpan" disabled>Simpan Data</button>
+
+  <section id="riwayatSection" style="display:none;">
+    <h2>Riwayat Pengisian Data Motorik</h2>
+    <table id="riwayatTable">
+      <thead>
+        <tr>
+          <th>Tanggal Input</th>
+          <th>Tanggal Lahir Anak</th>
+          <th>Usia (bulan)</th>
+          <th>Status Motorik</th>
+        </tr>
+      </thead>
+      <tbody id="riwayatBody"></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+  // Tombol kembali dan keluar
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = 'anak.html';
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  const nikLogin = sessionStorage.getItem('nik');
+  if (!nikLogin) {
+    alert('NIK tidak ditemukan, silakan login ulang.');
+    window.location.href = 'login.html';
+  }
+
+  const tglLahirInput = document.getElementById('tglLahirInput');
+  const ageDisplay = document.getElementById('ageDisplay');
+  const motorikList = document.getElementById('motorikList');
+  const statusMotorik = document.getElementById('statusMotorik');
+  const btnSimpan = document.getElementById('btnSimpan');
+  const riwayatSection = document.getElementById('riwayatSection');
+  const riwayatBody = document.getElementById('riwayatBody');
+
+  tglLahirInput.max = new Date().toISOString().split('T')[0];
+
+  const pencapaianMotorik = {
+    1: {
+      kasar: [
+        "Menggerakkan lengan dan kaki secara refleks",
+        "Mengangkat kepala sebentar saat tengkurap (sekitar 45 derajat)",
+        "Mata mengikuti gerakan benda atau orang di dekatnya"
+      ],
+      halus: []
+    },
+    2: {
+      kasar: [
+        "Mengangkat kepala lebih kuat saat tengkurap",
+        "Menggerakkan tangan dan kaki bergantian"
+      ],
+      halus: [
+        "Mulai menggenggam benda secara refleks"
+      ]
+    },
+    3: {
+      kasar: [
+        "Mengangkat kepala hingga 90° saat tengkurap"
+      ],
+      halus: [
+        "Mulai menggenggam mainan",
+        "Mulai tersenyum dan bereaksi terhadap suara"
+      ]
+    },
+    4: {
+      kasar: [
+        "Mengangkat kepala dan dada dengan bertumpu pada tangan saat tengkurap"
+      ],
+      halus: [
+        "Meraih dan menggenggam mainan",
+        "Memindahkan benda dari satu tangan ke tangan lain"
+      ]
+    },
+    5: {
+      kasar: [
+        "Duduk dengan bantuan",
+        "Merangkak atau mencoba merangkak"
+      ],
+      halus: [
+        "Memegang benda dengan ibu jari dan telunjuk (pinset grip)"
+      ]
+    },
+    6: {
+      kasar: [
+        "Duduk tanpa bantuan sebentar",
+        "Merangkak maju",
+        "Mencoba berdiri dengan berpegangan"
+      ],
+      halus: []
+    },
+    7: {
+      kasar: [
+        "Duduk stabil tanpa bantuan",
+        "Berdiri dengan berpegangan"
+      ],
+      halus: [
+        "Memindahkan benda antar tangan dengan baik"
+      ]
+    },
+    8: {
+      kasar: [
+        "Berdiri dengan berpegangan lebih kuat",
+        "Merangkak dengan lancar"
+      ],
+      halus: [
+        "Mengambil benda kecil dengan jari"
+      ]
+    },
+    9: {
+      kasar: [
+        "Berdiri sendiri sebentar",
+        "Mulai berjalan dengan bantuan"
+      ],
+      halus: [
+        "Melambaikan tangan sebagai tanda perpisahan"
+      ]
+    },
+    10: {
+      kasar: [
+        "Berjalan dengan bantuan lebih baik"
+      ],
+      halus: [
+        "Mengambil benda kecil dengan jari telunjuk dan ibu jari",
+        "Meniru gerakan sederhana"
+      ]
+    },
+    11: {
+      kasar: [
+        "Berdiri sendiri lebih lama",
+        "Berjalan beberapa langkah sendiri"
+      ],
+      halus: [
+        "Menggunakan jari untuk menunjuk benda"
+      ]
+    },
+    12: {
+      kasar: [
+        "Berjalan sendiri beberapa langkah"
+      ],
+      halus: [
+        "Melambaikan tangan sebagai tanda perpisahan",
+        "Mengambil dan memasukkan benda ke dalam wadah"
+      ]
+    }
+  };
+
+  function hitungUsiaBulan(tglLahir) {
+    if (!tglLahir) return 0;
+    const lahir = new Date(tglLahir);
+    const sekarang = new Date();
+    let bulan = (sekarang.getFullYear() - lahir.getFullYear()) * 12 + (sekarang.getMonth() - lahir.getMonth());
+    if (sekarang.getDate() < lahir.getDate()) bulan--;
+    return bulan >= 0 ? bulan + 1 : 0;
+  }
+
+  function renderDaftarMotorik(usiaBulan) {
+    motorikList.innerHTML = '';
+    if (usiaBulan < 1) return;
+
+    for (let bulan = 1; bulan <= usiaBulan && bulan <= 12; bulan++) {
+      const group = document.createElement('div');
+      group.className = 'bulan-group';
+
+      const title = document.createElement('h3');
+      title.textContent = `Bulan ${bulan}`;
+      group.appendChild(title);
+
+      const items = [];
+      if (pencapaianMotorik[bulan]) {
+        items.push(...pencapaianMotorik[bulan].kasar);
+        items.push(...pencapaianMotorik[bulan].halus);
+      }
+
+      items.forEach((item, idx) => {
+        const id = `bulan${bulan}_item${idx}`;
+        const div = document.createElement('div');
+        div.className = 'motorik-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = id;
+
+        const label = document.createElement('label');
+        label.htmlFor = id;
+        label.textContent = item;
+
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        group.appendChild(div);
+      });
+
+      motorikList.appendChild(group);
+    }
+  }
+
+  function semuaTercapai() {
+    const checkboxes = motorikList.querySelectorAll('input[type=checkbox]');
+    return checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+  }
+
+  function simpanData(usiaBulan, tercapai, tglLahir) {
+    const key = `motorik_${nikLogin}`;
+    let data = JSON.parse(localStorage.getItem(key) || '[]');
+
+    const checkboxes = motorikList.querySelectorAll('input[type=checkbox]');
+    const ceklist = {};
+    checkboxes.forEach(cb => {
+      ceklist[cb.id] = cb.checked;
+    });
+
+    const entry = {
+      date: new Date().toISOString(),
+      usiaBulan,
+      tercapai,
+      tglLahir,
+      ceklist
+    };
+
+    data.push(entry);
+    localStorage.setItem(key, JSON.stringify(data));
+    // Simpan juga tanggal lahir terpisah agar bisa dimuat otomatis
+    localStorage.setItem(`motorik_tglLahir_${nikLogin}`, tglLahir);
+  }
+
+  function muatDataSebelumnya() {
+    const key = `motorik_${nikLogin}`;
+    const data = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!data.length) return;
+
+    const terakhir = data[data.length - 1];
+    const ceklist = terakhir.ceklist || {};
+    const checkboxes = motorikList.querySelectorAll('input[type=checkbox]');
+    checkboxes.forEach(cb => {
+      cb.checked = ceklist[cb.id] || false;
+    });
+    updateStatus();
+  }
+
+  function tampilkanRiwayat() {
+    const key = `motorik_${nikLogin}`;
+    const data = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!data.length) {
+      riwayatSection.style.display = 'none';
+      return;
+    }
+    riwayatSection.style.display = 'block';
+    riwayatBody.innerHTML = '';
+    data.slice().reverse().forEach(entry => {
+      const tanggalInput = new Date(entry.date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      const tanggalLahir = entry.tglLahir ? new Date(entry.tglLahir).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+      const statusText = entry.tercapai ? 'Motorik Tercapai' : 'Motorik Belum Tercapai';
+      const statusClass = entry.tercapai ? 'status-tercapai' : 'status-belum';
+      riwayatBody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${tanggalInput}</td>
+          <td>${tanggalLahir}</td>
+          <td>${entry.usiaBulan}</td>
+          <td class="${statusClass}">${statusText}</td>
+        </tr>
+      `);
+    });
+  }
+
+  function updateStatus() {
+    if (semuaTercapai()) {
+      statusMotorik.textContent = "Motorik Tercapai";
+      statusMotorik.className = "tercapai";
+      btnSimpan.disabled = false;
+    } else {
+      statusMotorik.textContent = "Motorik Belum Tercapai";
+      statusMotorik.className = "belum";
+      btnSimpan.disabled = false;
+    }
+  }
+
+  tglLahirInput.addEventListener('change', () => {
+    const usia = hitungUsiaBulan(tglLahirInput.value);
+    if (usia < 1) {
+      ageDisplay.textContent = "Usia minimal 1 bulan untuk cek motorik.";
+      motorikList.innerHTML = '';
+      statusMotorik.textContent = '';
+      btnSimpan.disabled = true;
+      riwayatSection.style.display = 'none';
+      return;
+    }
+    ageDisplay.textContent = `Usia anak: ${usia} bulan`;
+    renderDaftarMotorik(usia);
+    muatDataSebelumnya();
+    updateStatus();
+    tampilkanRiwayat();
+  });
+
+  motorikList.addEventListener('change', e => {
+    if (e.target && e.target.type === 'checkbox') {
+      updateStatus();
+    }
+  });
+
+  btnSimpan.addEventListener('click', () => {
+    const usia = hitungUsiaBulan(tglLahirInput.value);
+    const tercapai = semuaTercapai();
+    simpanData(usia, tercapai, tglLahirInput.value);
+    alert('Data motorik berhasil disimpan!');
+    tampilkanRiwayat();
+  });
+
+  window.addEventListener('load', () => {
+    // Muat tanggal lahir yang tersimpan jika ada
+    const savedTglLahir = localStorage.getItem(`motorik_tglLahir_${nikLogin}`);
+    if (savedTglLahir) {
+      tglLahirInput.value = savedTglLahir;
+      tglLahirInput.dispatchEvent(new Event('change'));
+    }
+  });
+</script>
+
+</body>
+</html>

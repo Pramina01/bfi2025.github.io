@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tanya Mina - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff0f0;
+    color: #b71c1c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    margin-bottom: 30px;
+  }
+  header .header-left {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    user-select: none;
+  }
+  header button {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 10px;
+  }
+  header button:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  input[type="text"] {
+    flex: 1 1 100%;
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #b71c1c;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  button:disabled {
+    background-color: #d9a3a3;
+    cursor: not-allowed;
+  }
+  button:hover:not(:disabled) {
+    background-color: #7f1212;
+  }
+  button#micBtn.recording {
+    background-color: #388e3c;
+  }
+  #status {
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    min-height: 1.5em;
+    text-align: center;
+    white-space: pre-wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  #jawaban {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    min-height: 2em;
+    white-space: pre-wrap;
+    text-align: center;
+  }
+  @media (min-width: 480px) {
+    form input[type="text"] {
+      flex: 1 1 auto;
+    }
+    form button {
+      flex: 0 0 auto;
+    }
+  }
+  /* Loading spinner */
+  .spinner {
+    border: 4px solid rgba(183,28,28,0.2);
+    border-top: 4px solid #b71c1c;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+  </div>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<h1>Tanya Mina</h1>
+
+<form id="tanyaForm" autocomplete="off" novalidate>
+  <input type="text" name="entry.572940424" id="pertanyaanInput" placeholder="Ketik pertanyaan atau gunakan mic" required aria-label="Input pertanyaan" />
+  <button type="button" id="micBtn" title="Tekan untuk mulai/berhenti rekam suara" aria-pressed="false" aria-label="Tombol mikrofon">&#127908;</button>
+  <button type="button" id="hapusBtn" title="Hapus satu kata terakhir" aria-label="Tombol hapus kata">⌫</button>
+  <button type="submit" id="kirimBtn" disabled>Kirim</button>
+</form>
+
+<div id="status" aria-live="polite"></div>
+<div id="jawaban" aria-live="polite"></div>
+
+<script>
+  // Tombol kembali dan keluar
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = 'home.html';
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  (() => {
+    const pertanyaanInput = document.getElementById('pertanyaanInput');
+    const micBtn = document.getElementById('micBtn');
+    const hapusBtn = document.getElementById('hapusBtn');
+    const kirimBtn = document.getElementById('kirimBtn');
+    const statusDiv = document.getElementById('status');
+    const jawabanDiv = document.getElementById('jawaban');
+    const form = document.getElementById('tanyaForm');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isRecording = false;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        micBtn.classList.add('recording');
+        micBtn.setAttribute('aria-pressed', 'true');
+        statusDiv.innerHTML = '<div class="spinner"></div> Merekam...';
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.setAttribute('aria-pressed', 'false');
+        if (!statusDiv.textContent.includes('Mengirim') && !statusDiv.textContent.includes('Mina sedang mengetik')) {
+          statusDiv.textContent = '';
+        }
+      };
+
+      recognition.onerror = (e) => {
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.setAttribute('aria-pressed', 'false');
+        statusDiv.textContent = 'Error saat merekam: ' + e.error;
+      };
+
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript.trim() + ' ';
+          }
+        }
+        if (finalTranscript) {
+          pertanyaanInput.value = finalTranscript.trim();
+          updateKirimBtn();
+        }
+      };
+    } else {
+      micBtn.disabled = true;
+      statusDiv.textContent = 'Browser Anda tidak mendukung fitur suara.';
+    }
+
+    micBtn.addEventListener('click', () => {
+      if (!recognition) return;
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (e) {
+          // Ignore error if start called multiple times quickly
+        }
+      }
+    });
+
+    hapusBtn.addEventListener('click', () => {
+      let text = pertanyaanInput.value.trim();
+      if (!text) return;
+      let words = text.split(/\s+/);
+      words.pop();
+      pertanyaanInput.value = words.join(' ');
+      updateKirimBtn();
+    });
+
+    function updateKirimBtn() {
+      kirimBtn.disabled = pertanyaanInput.value.trim().length === 0;
+    }
+
+    pertanyaanInput.addEventListener('input', updateKirimBtn);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (kirimBtn.disabled) return;
+
+      const pertanyaan = pertanyaanInput.value.trim();
+      if (!pertanyaan) return;
+
+      statusDiv.innerHTML = '<div class="spinner"></div> Mengirim pertanyaan...';
+      jawabanDiv.textContent = '';
+      kirimBtn.disabled = true;
+      micBtn.disabled = true;
+      hapusBtn.disabled = true;
+
+      const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSf6FjckGvrr2AKoMhftKx0N5VHdMSCfhYeMoZNfBus8Ei7OrA/formResponse';
+      const formData = new FormData();
+      formData.append('entry.572940424', pertanyaan);
+
+      fetch(googleFormUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      }).then(() => {
+        statusDiv.innerHTML = '<div class="spinner"></div> Mina sedang mengetik jawaban...';
+        startPollingJawaban(pertanyaan);
+      }).catch(() => {
+        statusDiv.textContent = 'Gagal mengirim pertanyaan. Silakan coba lagi.';
+        kirimBtn.disabled = false;
+        micBtn.disabled = false;
+        hapusBtn.disabled = false;
+      });
+    });
+
+    let pollingInterval = null;
+    let pollingCount = 0;
+    const maxPollingCount = 20;
+
+    function startPollingJawaban(pertanyaan) {
+      if (pollingInterval) clearInterval(pollingInterval);
+      pollingCount = 0;
+
+      function poll() {
+        pollingCount++;
+        if (pollingCount > maxPollingCount) {
+          statusDiv.textContent = 'Jawaban tidak tersedia saat ini. Silakan coba lagi nanti.';
+          kirimBtn.disabled = false;
+          micBtn.disabled = false;
+          hapusBtn.disabled = false;
+          clearInterval(pollingInterval);
+          pollingInterval = null;
+          return;
+        }
+        fetch(`https://script.google.com/macros/s/AKfycbzXZkY3wvMoVlOiqIvCogLKm8GZ5wpOi3NM3abvmb4cw02org_qRCvsZBe9ZHc87F1p/exec?pertanyaan=${encodeURIComponent(pertanyaan)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.jawaban && data.jawaban.trim().length > 0) {
+              jawabanDiv.textContent = data.jawaban;
+              statusDiv.textContent = 'Jawaban diterima.';
+              kirimBtn.disabled = false;
+              micBtn.disabled = false;
+              hapusBtn.disabled = false;
+              clearInterval(pollingInterval);
+              pollingInterval = null;
+            } else {
+              statusDiv.innerHTML = '<div class="spinner"></div> Mina sedang mengetik jawaban...';
+            }
+          }).catch(() => {
+            statusDiv.innerHTML = '<div class="spinner"></div> Mina sedang mengetik jawaban...';
+          });
+      }
+
+      poll();
+      pollingInterval = setInterval(poll, 30000);
+    }
+
+    updateKirimBtn();
+  })();
+</script>
+
+</body>
+</html>

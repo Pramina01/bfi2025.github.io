@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login PRAMINA</title>
+  <style>
+    /* Reset dan font */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #b71c1c;
+    }
+    .login-container {
+      background: white;
+      padding: 40px 30px 50px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(183,28,28,0.3);
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo {
+      margin-bottom: 30px;
+    }
+    .logo img {
+      width: 120px;
+      user-select: none;
+    }
+    h2 {
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #b71c1c;
+      user-select: none;
+      letter-spacing: 1.5px;
+    }
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      color: #b71c1c;
+      outline-offset: 2px;
+      transition: border-color 0.3s;
+      box-shadow: inset 0 1px 3px rgba(183,28,28,0.1);
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #7f1212;
+      box-shadow: 0 0 8px 2px rgba(183,28,28,0.4);
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: #b71c1c;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      box-shadow: 0 6px 15px rgba(183,28,28,0.4);
+    }
+    button:hover {
+      background-color: #7f1212;
+      box-shadow: 0 8px 20px rgba(127,18,18,0.7);
+    }
+    #errorMsg {
+      color: #d32f2f;
+      font-weight: 600;
+      margin-top: 12px;
+      min-height: 1.4em;
+      font-size: 1rem;
+      user-select: none;
+    }
+    /* Loading overlay */
+    #loadingOverlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 20px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+      user-select: none;
+    }
+    #loadingOverlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* Google style loading dots */
+    .loading-dots {
+      display: flex;
+      gap: 12px;
+    }
+    .loading-dots div {
+      width: 14px;
+      height: 14px;
+      background-color: #b71c1c;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .loading-dots div:nth-child(1) {
+      animation-delay: -0.36s;
+    }
+    .loading-dots div:nth-child(2) {
+      animation-delay: -0.18s;
+    }
+    .loading-dots div:nth-child(3) {
+      animation-delay: 0;
+    }
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      } 40% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container" role="main" aria-labelledby="loginTitle">
+    <div class="logo" aria-hidden="true">
+      <!-- Ganti src dengan path/logo PRAMINA Anda -->
+      <img src="logo.png" alt="Logo PRAMINA" />
+    </div>
+    <h2 id="loginTitle">Login PRAMINA</h2>
+    <form id="loginForm" autocomplete="off" novalidate>
+      <label for="nikInput">NIK / Kode Unik</label>
+      <input type="text" id="nikInput" name="nik" placeholder="Masukkan NIK atau kode unik" required aria-required="true" />
+      <label for="pinInput">PIN</label>
+      <input type="password" id="pinInput" name="pin" placeholder="Masukkan PIN" required aria-required="true" />
+      <button type="submit" aria-live="polite" aria-busy="false">Masuk</button>
+      <div id="errorMsg" role="alert" aria-live="assertive"></div>
+    </form>
+    <div id="loadingOverlay" aria-hidden="true" aria-label="Loading">
+      <div class="loading-dots" aria-hidden="true">
+        <div></div><div></div><div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const nikInput = document.getElementById('nikInput');
+    const pinInput = document.getElementById('pinInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const submitButton = loginForm.querySelector('button[type="submit"]');
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      errorMsg.textContent = '';
+
+      const nik = nikInput.value.trim();
+      const pin = pinInput.value.trim();
+
+      if (!nik || !pin) {
+        errorMsg.textContent = 'NIK dan PIN wajib diisi.';
+        return;
+      }
+
+      // Tampilkan loading
+      loadingOverlay.classList.add('active');
+      submitButton.setAttribute('aria-busy', 'true');
+      submitButton.disabled = true;
+
+      // Ganti URL_WEB_APP dengan URL Web App Google Apps Script Anda yang sudah deploy
+      const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbxsdCojzSCk88fCVXF7FXg0oU3RtQTKkPGcBBf9H678Zqb7C8pk7yPO0Qhwm1TTudU/exec';
+
+      // Kirim request dengan action=verifyPin sesuai Apps Script Anda
+      const url = `${URL_WEB_APP}?action=verifyPin&nik=${encodeURIComponent(nik)}&pin=${encodeURIComponent(pin)}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          loadingOverlay.classList.remove('active');
+          submitButton.setAttribute('aria-busy', 'false');
+          submitButton.disabled = false;
+
+          if (data.success) {
+            sessionStorage.setItem('nik', nik);
+            window.location.href = 'homehp.html';
+          } else {
+            errorMsg.textContent = 'NIK atau PIN salah.';
+          }
+        })
+        .catch(() => {
+          loadingOverlay.classList.remove('active');
+          submitButton.setAttribute('aria-busy', 'false');
+          submitButton.disabled = false;
+          errorMsg.textContent = 'Gagal terhubung ke server.';
+        });
+    });
+  </script>
+</body>
+</html>

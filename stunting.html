@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Riwayat Stunting Anak - PRAMINA</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff0f0;
+    color: #b71c1c;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  .header-left img {
+    height: 40px;
+    margin-right: 12px;
+  }
+  .header-left h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    user-select: none;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 700px;
+    width: 100%;
+  }
+  form {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 8px;
+    max-width: 400px;
+    width: 100%;
+    justify-content: center;
+  }
+  input[type="text"] {
+    font-size: 1rem;
+    padding: 8px 10px;
+    border: 2px solid #b71c1c;
+    border-radius: 6px;
+    color: #b71c1c;
+    box-sizing: border-box;
+    flex-grow: 1;
+  }
+  button[type="submit"] {
+    background-color: #b71c1c;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  button[type="submit"]:hover {
+    background-color: #7f1212;
+  }
+  .history {
+    max-width: 900px;
+    width: 100%;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    overflow-x: auto;
+    background: none;
+  }
+  .history table {
+    min-width: 900px;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: none;
+    table-layout: auto;
+  }
+  th, td {
+    border: 1.5px solid #b71c1c;
+    padding: 8px;
+    text-align: center;
+    background: none;
+    white-space: nowrap;
+  }
+  th {
+    background: #b71c1c;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .status-normal { color: #388e3c; font-weight: bold; }
+  .status-warning { color: #ff9800; font-weight: bold; }
+  .status-danger { color: #d32f2f; font-weight: bold; }
+  .no-data {
+    color: #b71c1c;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    max-width: 700px;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+  </div>
+</header>
+
+<h2>Riwayat Data Stunting Anak</h2>
+<form id="searchForm">
+  <input type="text" id="nikInput" placeholder="Masukkan NIK" required />
+  <button type="submit">Cari</button>
+</form>
+
+<div id="noData" class="no-data" style="display:none;">Data tidak ditemukan untuk NIK tersebut.</div>
+
+<div class="history" id="historySection" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Tanggal Input</th>
+        <th>Umur (bulan)</th>
+        <th>Jenis Kelamin</th>
+        <th>Tinggi Badan (cm)</th>
+        <th>Status TB/U</th>
+        <th>Berat Badan (kg)</th>
+        <th>Status BB/U</th>
+        <th>Lingkar Kepala (cm)</th>
+        <th>Status Lingkar Kepala</th>
+        <th>Lingkar Lengan Atas (cm)</th>
+        <th>Status Lingkar Lengan Atas</th>
+      </tr>
+    </thead>
+    <tbody id="historyBody"></tbody>
+  </table>
+</div>
+
+<script>
+  const searchForm = document.getElementById('searchForm');
+  const nikInput = document.getElementById('nikInput');
+  const historySection = document.getElementById('historySection');
+  const historyBody = document.getElementById('historyBody');
+  const noData = document.getElementById('noData');
+
+  searchForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nik = nikInput.value.trim();
+    if (!nik) return;
+
+    const data = JSON.parse(localStorage.getItem(`child_data_${nik}`) || '[]');
+
+    historyBody.innerHTML = '';
+    if (data.length === 0) {
+      historySection.style.display = 'none';
+      noData.style.display = 'block';
+      return;
+    }
+    noData.style.display = 'none';
+    historySection.style.display = 'block';
+
+    data.slice().reverse().forEach(entry => {
+      const dateStr = new Date(entry.date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+      historyBody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${dateStr}</td>
+          <td>${entry.umur}</td>
+          <td>${entry.jenisKelamin === 'laki-laki' ? 'Laki-laki' : 'Perempuan'}</td>
+          <td>${entry.tinggiBadan.toFixed(1)}</td>
+          <td class="${entry.analysis.heightStatus.class}">${entry.analysis.heightStatus.status}</td>
+          <td>${entry.beratBadan.toFixed(2)}</td>
+          <td class="${entry.analysis.weightStatus.class}">${entry.analysis.weightStatus.status}</td>
+          <td>${entry.lingkarKepala.toFixed(1)}</td>
+          <td class="${entry.analysis.headCircStatus.class}">${entry.analysis.headCircStatus.status}</td>
+          <td>${entry.lingkarLenganAtas.toFixed(1)}</td>
+          <td class="${entry.analysis.armCircStatus.class}">${entry.analysis.armCircStatus.status}</td>
+        </tr>
+      `);
+    });
+  });
+</script>
+</body>
+</html>

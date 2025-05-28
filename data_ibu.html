@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Ibu - PRAMINA</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #b71c1c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      flex-grow: 1;
+    }
+    #btnBack, #btnLogout {
+      background-color: white;
+      color: #b71c1c;
+      border: 2px solid white;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      margin-left: 10px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #btnBack { right: 100px; }
+    #btnLogout { right: 20px; }
+    #btnBack:hover, #btnLogout:hover {
+      background-color: #7f1212;
+      color: white;
+      border-color: white;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin: 40px 15px 40px 15px;
+      text-align: left;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    #nikDisplay {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 25px;
+      color: #7f1212;
+    }
+    form {
+      background: #fff0f0;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      padding: 30px 25px;
+      box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: 700;
+      color: #b71c1c;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #b71c1c;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      background: #fff;
+      color: #b71c1c;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    input[readonly] {
+      background: #f8dede;
+      color: #b71c1c;
+      cursor: not-allowed;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #7f1212;
+      outline: none;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-top: 8px;
+    }
+    .checkbox-group label {
+      font-weight: 500;
+      font-size: 1rem;
+      color: #b71c1c;
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: #b71c1c;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 30px;
+    }
+    button[type="submit"] {
+      background-color: #b71c1c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      letter-spacing: 1px;
+      min-width: 120px;
+    }
+    button[type="submit"]:hover {
+      background-color: #7f1212;
+    }
+    .error-message {
+      color: red;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    @media (max-width: 480px) {
+      form {
+        padding: 25px 15px;
+      }
+      #btnBack { right: 90px; }
+      #btnLogout { right: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+    <button id="btnBack" title="Kembali">Kembali</button>
+    <button id="btnLogout" title="Keluar">Keluar</button>
+  </header>
+
+  <main>
+    <h2>DATA IBU</h2>
+    <p id="nikDisplay">NIK Login: </p>
+    <form id="formIbu" autocomplete="off" novalidate>
+      <div class="error-message" id="errorMessage" style="display:none;"></div>
+      <div class="form-group">
+        <label for="namaIbu">Nama Ibu</label>
+        <input type="text" id="namaIbu" name="namaIbu" readonly />
+      </div>
+      <div class="form-group">
+        <label for="alamatIbu">Alamat</label>
+        <textarea id="alamatIbu" name="alamatIbu" rows="2" readonly></textarea>
+      </div>
+      <div class="form-group">
+        <label for="statusIbu">Status <span style="color:red;">*</span></label>
+        <select id="statusIbu" name="statusIbu" required>
+          <option value="">-- Pilih Status --</option>
+          <option value="ibu hamil">Ibu Hamil</option>
+          <option value="sudah melahirkan">Sudah Melahirkan</option>
+        </select>
+      </div>
+      <div class="form-group" id="hphtGroup" style="display:none;">
+        <label for="hpht">Hari Pertama Haid Terakhir (HPHT) <span style="color:red;">*</span></label>
+        <input type="date" id="hpht" name="hpht" />
+      </div>
+      <div class="form-group" id="lahirGroup" style="display:none;">
+        <label for="tglLahir">Tanggal Kelahiran <span style="color:red;">*</span></label>
+        <input type="date" id="tglLahir" name="tglLahir" />
+      </div>
+      <div class="form-group">
+        <label>Riwayat Penyakit <span style="color:red;">*</span></label>
+        <div class="checkbox-group" id="penyakitGroup">
+          <label><input type="checkbox" value="tidak ada penyakit" id="tidakAdaPenyakit" name="penyakit" />Tidak Ada Penyakit</label>
+          <label><input type="checkbox" value="penyakit jantung" name="penyakit" />Penyakit Jantung</label>
+          <label><input type="checkbox" value="diabetes" name="penyakit" />Diabetes</label>
+          <label><input type="checkbox" value="anemia" name="penyakit" />Anemia</label>
+          <label><input type="checkbox" value="tuberkulosis" name="penyakit" />Tuberkulosis</label>
+          <label><input type="checkbox" value="penyakit lain" name="penyakit" />Penyakit Lain</label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit">Simpan</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Tombol Kembali dan Keluar
+    document.getElementById('btnBack').addEventListener('click', () => {
+      window.location.href = "ibu.html";
+    });
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+
+    // Ambil data profil dari localStorage berdasarkan NIK
+    const nik = sessionStorage.getItem('nik');
+    if (!nik) {
+      alert("NIK tidak ditemukan, silakan login ulang.");
+      window.location.href = "login.html";
+    }
+    document.getElementById('nikDisplay').textContent = "NIK Login: " + nik;
+
+    const profileKey = `profil_${nik}`;
+    const profil = JSON.parse(localStorage.getItem(profileKey) || '{}');
+
+    // Isi data Nama dan Alamat
+    document.getElementById('namaIbu').value = profil.nama || "";
+    document.getElementById('alamatIbu').value = profil.alamat || "";
+
+    // Elemen checkbox
+    const tidakAdaPenyakit = document.getElementById('tidakAdaPenyakit');
+    const penyakitCheckboxes = Array.from(document.querySelectorAll('#penyakitGroup input[type="checkbox"]')).filter(cb => cb !== tidakAdaPenyakit);
+
+    // Jika "Tidak Ada Penyakit" dicentang, disable checkbox lain, dan sebaliknya
+    tidakAdaPenyakit.addEventListener('change', () => {
+      if (tidakAdaPenyakit.checked) {
+        penyakitCheckboxes.forEach(cb => {
+          cb.checked = false;
+          cb.disabled = true;
+        });
+      } else {
+        penyakitCheckboxes.forEach(cb => {
+          cb.disabled = false;
+        });
+      }
+    });
+
+    // Jika salah satu checkbox penyakit lain dicentang, "Tidak Ada Penyakit" otomatis tidak dicentang
+    penyakitCheckboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) {
+          tidakAdaPenyakit.checked = false;
+          tidakAdaPenyakit.disabled = true;
+        } else {
+          if (!penyakitCheckboxes.some(c => c.checked)) {
+            tidakAdaPenyakit.disabled = false;
+          }
+        }
+      });
+    });
+
+    // Tampilkan/hide input HPHT atau Tanggal Lahir sesuai status
+    const statusIbu = document.getElementById('statusIbu');
+    const hphtGroup = document.getElementById('hphtGroup');
+    const lahirGroup = document.getElementById('lahirGroup');
+    const errorMessage = document.getElementById('errorMessage');
+
+    function showStatusFields() {
+      if (statusIbu.value === "ibu hamil") {
+        hphtGroup.style.display = "";
+        lahirGroup.style.display = "none";
+      } else if (statusIbu.value === "sudah melahirkan") {
+        hphtGroup.style.display = "none";
+        lahirGroup.style.display = "";
+      } else {
+        hphtGroup.style.display = "none";
+        lahirGroup.style.display = "none";
+      }
+      errorMessage.style.display = 'none';
+    }
+    statusIbu.addEventListener('change', showStatusFields);
+    showStatusFields();
+
+    // --- LOAD DATA IBU JIKA SUDAH PERNAH DISIMPAN ---
+    const savedDataIbu = JSON.parse(localStorage.getItem(`data_ibu_${nik}`) || '{}');
+    if (savedDataIbu && Object.keys(savedDataIbu).length > 0) {
+      if (savedDataIbu.statusIbu) {
+        statusIbu.value = savedDataIbu.statusIbu;
+        showStatusFields();
+      }
+      if (savedDataIbu.hpht) document.getElementById('hpht').value = savedDataIbu.hpht;
+      if (savedDataIbu.tglLahir) document.getElementById('tglLahir').value = savedDataIbu.tglLahir;
+      if (Array.isArray(savedDataIbu.penyakit)) {
+        if (savedDataIbu.penyakit.includes("tidak ada penyakit")) {
+          tidakAdaPenyakit.checked = true;
+          penyakitCheckboxes.forEach(cb => {
+            cb.checked = false;
+            cb.disabled = true;
+          });
+        } else {
+          tidakAdaPenyakit.checked = false;
+          tidakAdaPenyakit.disabled = false;
+          penyakitCheckboxes.forEach(cb => {
+            cb.checked = savedDataIbu.penyakit.includes(cb.value);
+            cb.disabled = false;
+          });
+        }
+      }
+    }
+
+    // Validasi form sebelum submit
+    document.getElementById('formIbu').addEventListener('submit', e => {
+      e.preventDefault();
+      errorMessage.style.display = 'none';
+
+      const statusVal = statusIbu.value.trim();
+      const hphtVal = document.getElementById('hpht').value.trim();
+      const tglLahirVal = document.getElementById('tglLahir').value.trim();
+      const penyakitChecked = Array.from(document.querySelectorAll('#penyakitGroup input[type="checkbox"]:checked'));
+
+      let valid = true;
+      let messages = [];
+
+      if (!statusVal) {
+        valid = false;
+        messages.push("Status harus dipilih");
+      }
+      if (statusVal === "ibu hamil" && !hphtVal) {
+        valid = false;
+        messages.push("HPHT harus diisi");
+      }
+      if (statusVal === "sudah melahirkan" && !tglLahirVal) {
+        valid = false;
+        messages.push("Tanggal Kelahiran harus diisi");
+      }
+      if (penyakitChecked.length === 0) {
+        valid = false;
+        messages.push("Pilih minimal satu riwayat penyakit");
+      }
+
+      if (!valid) {
+        errorMessage.textContent = "Tolong lengkapi data: " + messages.join(", ");
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      const dataIbu = {
+        namaIbu: document.getElementById('namaIbu').value,
+        alamatIbu: document.getElementById('alamatIbu').value,
+        statusIbu: statusVal,
+        hpht: hphtVal,
+        tglLahir: tglLahirVal,
+        penyakit: penyakitChecked.map(cb => cb.value)
+      };
+      localStorage.setItem(`data_ibu_${nik}`, JSON.stringify(dataIbu));
+      alert("Data ibu berhasil disimpan!");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deteksi Depresi - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background-color: #b71c1c;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  #btnBack, #btnLogout {
+    background: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 10px;
+  }
+  #btnBack:hover, #btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    flex: 1;
+    padding: 20px;
+    max-width: 720px;
+    margin: 20px auto 40px;
+    display: flex;
+    gap: 20px;
+  }
+  #formContainer, #resultContainer {
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+  }
+  #formContainer {
+    flex: 1;
+  }
+  #resultContainer {
+    display: none;
+    flex-direction: column;
+    width: auto;
+    max-width: 45%;
+    min-width: 250px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 1.1rem;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    color: #b71c1c;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  button[type="submit"], #btnRujukan {
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  button[type="submit"]:hover, #btnRujukan:hover {
+    background-color: #7f1212;
+  }
+  #score {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  #status {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  #description, #recommendation {
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+  #resultContainer > div {
+    margin-bottom: 8px;
+  }
+  .error-message {
+    color: red;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: none;
+  }
+  @media (max-width: 900px) {
+    main {
+      flex-direction: column;
+    }
+    #formContainer, #resultContainer {
+      width: 100%;
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>Deteksi Depresi</h1>
+  <button id="btnBack" title="Kembali ke Ibu">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <section id="formContainer">
+    <h2>Kuesioner Deteksi Depresi</h2>
+    <form id="depressionForm" novalidate>
+      <div class="error-message" id="formError">Mohon jawab semua pertanyaan.</div>
+
+      <label for="q1">1. Saya bisa tertawa dan melihat sisi lucu dari berbagai hal.</label>
+      <select name="q1" id="q1" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="0">Tidak pernah</option>
+        <option value="1">Hampir tidak pernah</option>
+        <option value="2">Kadang-kadang</option>
+        <option value="3">Cukup sering</option>
+      </select>
+
+      <label for="q2">2. Saya menantikan sesuatu dengan senang hati.</label>
+      <select name="q2" id="q2" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="0">Tidak pernah</option>
+        <option value="1">Hampir tidak pernah</option>
+        <option value="2">Kadang-kadang</option>
+        <option value="3">Cukup sering</option>
+      </select>
+
+      <label for="q3">3. Saya menyalahkan diri saya sendiri ketika ada hal-hal yang salah.</label>
+      <select name="q3" id="q3" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q4">4. Saya merasa cemas atau khawatir tanpa alasan yang jelas.</label>
+      <select name="q4" id="q4" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="0">Tidak pernah</option>
+        <option value="1">Hampir tidak pernah</option>
+        <option value="2">Kadang-kadang</option>
+        <option value="3">Cukup sering</option>
+      </select>
+
+      <label for="q5">5. Saya merasa takut atau panik tanpa alasan yang jelas.</label>
+      <select name="q5" id="q5" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q6">6. Segala sesuatu terasa membebani saya.</label>
+      <select name="q6" id="q6" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q7">7. Saya merasa tidak bahagia hingga saya sulit tidur.</label>
+      <select name="q7" id="q7" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q8">8. Saya merasa sedih atau tidak bahagia.</label>
+      <select name="q8" id="q8" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q9">9. Saya merasa begitu tidak bahagia sehingga saya menangis.</label>
+      <select name="q9" id="q9" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <label for="q10">10. Pikiran untuk menyakiti diri sendiri telah terlintas di benak saya.</label>
+      <select name="q10" id="q10" required>
+        <option value="">-- Pilih Jawaban --</option>
+        <option value="3">Tidak pernah</option>
+        <option value="2">Hampir tidak pernah</option>
+        <option value="1">Kadang-kadang</option>
+        <option value="0">Cukup sering</option>
+      </select>
+
+      <button type="submit">Analisis</button>
+    </form>
+  </section>
+
+  <section id="resultContainer">
+    <h2>Hasil Analisis</h2>
+    <div id="score"></div>
+    <div id="status"></div>
+    <div id="description"></div>
+    <div id="recommendation"></div>
+    <button id="btnRujukan" style="display:none; margin-top: 10px;">Buat Rujukan</button>
+  </section>
+</main>
+
+<script>
+  const form = document.getElementById('depressionForm');
+  const resultContainer = document.getElementById('resultContainer');
+  const scoreEl = document.getElementById('score');
+  const statusEl = document.getElementById('status');
+  const descriptionEl = document.getElementById('description');
+  const recommendationEl = document.getElementById('recommendation');
+  const btnRujukan = document.getElementById('btnRujukan');
+  const nik = sessionStorage.getItem('nik');
+
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = 'ibu.html';
+  });
+
+  // Suara klik
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+
+  function getScoreValue(qNum, selectedValue) {
+    const reverseSet = new Set([3,5,6,7,8,9,10]);
+    const val = parseInt(selectedValue);
+    if(reverseSet.has(qNum)) {
+      return 3 - val;
+    } else {
+      return val;
+    }
+  }
+
+  function getStatus(totalScore, q10Score) {
+    if(q10Score >= 1) return 'Bahaya';
+    if(totalScore >= 13) return 'Bahaya';
+    if(totalScore >= 10) return 'Waspada';
+    return 'Baik';
+  }
+
+  function getDescription(status) {
+    switch(status) {
+      case 'Baik':
+        return 'Kemungkinan tidak mengalami depresi, atau gejala ringan yang mungkin tidak mengganggu fungsi sehari-hari.';
+      case 'Waspada':
+        return 'Indikasi adanya gejala depresi yang perlu dipantau dan skrining ulang dalam 1-2 minggu.';
+      case 'Bahaya':
+        return 'Mengindikasikan risiko tinggi depresi postpartum dan perlu evaluasi serta penanganan lebih lanjut oleh tenaga kesehatan profesional.';
+      default:
+        return '';
+    }
+  }
+
+  function getRecommendation(status) {
+    if(status === 'Baik') return 'Jaga kesehatan mental Anda dengan baik.';
+    return 'Segera buat rujukan ke psikolog untuk evaluasi lebih lanjut.';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    document.getElementById('formError').style.display = 'none';
+
+    let totalScore = 0;
+    let q10Score = 0;
+
+    for(let i=1; i<=10; i++) {
+      const sel = form[`q${i}`];
+      if(!sel.value) {
+        document.getElementById('formError').style.display = 'block';
+        return;
+      }
+      const val = getScoreValue(i, sel.value);
+      totalScore += val;
+      if(i === 10) q10Score = val;
+    }
+
+    const status = getStatus(totalScore, q10Score);
+    const description = getDescription(status);
+    const recommendation = getRecommendation(status);
+
+    scoreEl.textContent = `Total Skor: ${totalScore} (Maksimal 30)`;
+    statusEl.textContent = `Status: ${status}`;
+    statusEl.style.color = status === 'Baik' ? 'green' : (status === 'Waspada' ? 'orange' : 'red');
+    descriptionEl.textContent = description;
+    recommendationEl.textContent = recommendation;
+
+    btnRujukan.style.display = (status === 'Waspada' || status === 'Bahaya') ? 'block' : 'none';
+    btnRujukan.onclick = () => window.location.href = 'rujukan.html';
+
+    resultContainer.style.display = 'flex';
+    form.reset();
+
+    // Simpan data hasil analisis ke localStorage berdasarkan NIK
+    const dataToSave = {
+      tanggalPengisian: new Date().toISOString().slice(0,10),
+      hasilAnalisis: status
+    };
+    if(nik) {
+      localStorage.setItem(`deteksiDepresi_${nik}`, JSON.stringify(dataToSave));
+      console.log('Data deteksi depresi tersimpan:', dataToSave);
+    }
+  });
+</script>
+</body>
+</html>

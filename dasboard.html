@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pusat Data PRAMINA</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #b71c1c;
+      --primary-dark: #7f1212;
+      --header-bg: #fff;
+      --text-dark: #222;
+      --hero-bg: #fff6f6;
+      --menu-bg: #fff;
+    }
+    body, html {
+      margin: 0; padding: 0; min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff6f6;
+      color: var(--text-dark);
+    }
+    /* HEADER */
+    header {
+      width: 100%;
+      background: var(--header-bg);
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      box-shadow: 0 2px 8px rgba(183,28,28,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 68px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-logo {
+      height: 40px;
+      user-select: none;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      margin: 0;
+      user-select: none;
+    }
+    /* HERO */
+    .hero-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px 40px 20px;
+      gap: 40px;
+      flex-wrap: wrap;
+      background: var(--hero-bg);
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 2px 16px rgba(183,28,28,0.06);
+    }
+    .hero-content {
+      flex: 1 1 350px;
+      min-width: 320px;
+      max-width: 600px;
+    }
+    .hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 22px;
+      color: var(--primary);
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+    }
+    .hero-desc {
+      font-size: 1.15rem;
+      margin-bottom: 24px;
+      color: #333;
+      max-width: 600px;
+      font-weight: 500;
+    }
+    .hero-img-wrap {
+      flex: 1 1 340px;
+      min-width: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .hero-img-bg {
+      background: #ffeaea;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      width: 340px;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(183,28,28,0.08);
+    }
+    .hero-img {
+      width: 240px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(183,28,28,0.12);
+      object-fit: cover;
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    /* MENU GRID */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 60px 20px;
+      text-align: center;
+    }
+    h2.menu-title {
+      font-size: 2rem;
+      margin-bottom: 32px;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      gap: 25px;
+      margin-top: 0;
+    }
+    .menu-item {
+      background: var(--menu-bg);
+      border-radius: 15px;
+      padding: 30px 20px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s, color 0.3s;
+      box-shadow: 0 4px 15px rgba(183,28,28,0.09);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--primary);
+      text-decoration: none;
+      user-select: none;
+      border: 1.5px solid #ffeaea;
+    }
+    .menu-item:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 8px 25px rgba(183,28,28,0.20);
+    }
+    .menu-item:hover .menu-icon {
+      color: #fff;
+    }
+    .menu-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--primary);
+      filter: drop-shadow(0 0 3px rgba(0,0,0,0.07));
+      transition: color 0.3s;
+    }
+    .menu-label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 900px) {
+      .hero-section {
+        flex-direction: column;
+        gap: 24px;
+        padding-top: 30px;
+      }
+      .hero-img-bg {
+        width: 250px;
+        height: 250px;
+      }
+      .hero-img {
+        width: 170px;
+      }
+    }
+    @media (max-width: 480px) {
+      header {
+        padding: 0 10px;
+      }
+      .header-title {
+        font-size: 1.1rem;
+      }
+      .hero-title {
+        font-size: 1.2rem;
+      }
+      .container {
+        padding: 10px 5px 40px 5px;
+      }
+      h2.menu-title {
+        font-size: 1.1rem;
+      }
+      .menu-icon {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img src="logo.png" alt="Logo PRAMINA" class="header-logo" />
+      <span class="header-title">PRAMINA</span>
+    </div>
+  </header>
+
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-title">
+        Pusat Data PRAMINA
+      </div>
+      <div class="hero-desc">
+        Pusat Data PRAMINA adalah pusat informasi dan layanan digital untuk memantau tumbuh kembang serta kesehatan anak secara terintegrasi.<br>
+        Di sini Anda dapat mengakses data skrining, imunisasi, status stunting, perkembangan motorik, dan layanan kesehatan anak lainnya secara mudah, cepat, dan aman.<br>
+        PRAMINA mendukung orang tua dan tenaga kesehatan dalam memastikan anak Indonesia tumbuh sehat, cerdas, dan optimal.
+      </div>
+    </div>
+    <div class="hero-img-wrap">
+      <div class="hero-img-bg">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"
+             alt="Dashboard Kesehatan Anak" class="hero-img" />
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <h2 class="menu-title">Menu Layanan PRAMINA</h2>
+    <div class="menu-grid">
+      <a href="hasilskrining.html" class="menu-item" title="Hasil Skrining">
+        <i class="fas fa-file-medical menu-icon"></i>
+        <div class="menu-label">Hasil Skrining</div>
+      </a>
+      <a href="p4kibu.html" class="menu-item" title="P4Kibu">
+        <i class="fas fa-notes-medical menu-icon"></i>
+        <div class="menu-label">P4K ibu</div>
+      </a>
+      <a href="catatanc.html" class="menu-item" title="Catatan C">
+        <i class="fas fa-book-medical menu-icon"></i>
+        <div class="menu-label">Catat anc</div>
+      </a>
+      <a href="imunisasi.html" class="menu-item" title="Imunisasi">
+        <i class="fas fa-syringe menu-icon"></i>
+        <div class="menu-label">Imunisasi</div>
+      </a>
+      <a href="stunting.html" class="menu-item" title="Stunting">
+        <i class="fas fa-baby menu-icon"></i>
+        <div class="menu-label">Stunting</div>
+      </a>
+      <a href="motorik.html" class="menu-item" title="Motorik">
+        <i class="fas fa-running menu-icon"></i>
+        <div class="menu-label">Motorik</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

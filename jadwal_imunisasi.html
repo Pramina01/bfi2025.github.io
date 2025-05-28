@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jadwal Imunisasi - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+    flex-grow: 1;
+    text-align: center;
+  }
+  #btnBack, #btnLogout {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #btnBack { right: 100px; }
+  #btnLogout { right: 20px; }
+  #btnBack:hover, #btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .nik-info {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #7f1212;
+  }
+  .imunisasi-group {
+    margin-bottom: 25px;
+  }
+  .imunisasi-group h3 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 6px;
+  }
+  .imunisasi-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .imunisasi-item label {
+    flex-grow: 1;
+    user-select: none;
+  }
+  .imunisasi-item .status {
+    font-weight: 700;
+    min-width: 120px;
+    text-align: center;
+  }
+  .status.done {
+    color: #388e3c;
+  }
+  .status.pending {
+    color: #d32f2f;
+  }
+  .status-date {
+    font-size: 0.9rem;
+    color: #7f1212;
+    margin-left: 10px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <h2>Jadwal Imunisasi Anak</h2>
+  <div class="nik-info" id="nikDisplay"></div>
+  <div id="imunisasiContainer"></div>
+</main>
+
+<script>
+  // Tombol Kembali dan Keluar
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = "anak.html";
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = "index.html";
+  });
+
+  // Suara klik aktif
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+
+  const nik = sessionStorage.getItem('nik');
+  const nikDisplay = document.getElementById('nikDisplay');
+  const imunisasiContainer = document.getElementById('imunisasiContainer');
+
+  if (!nik) {
+    alert("NIK tidak ditemukan, silakan login ulang.");
+    window.location.href = "login.html";
+  } else {
+    nikDisplay.textContent = "NIK Login: " + nik;
+
+    // Data imunisasi (sama dengan imunisasi.html)
+    const imunisasiData = [
+      { usia: "Saat Lahir (0 bulan)", items: [
+        "Hepatitis B dosis pertama (Hep B 0)",
+        "Polio dosis pertama (Polio 0)",
+        "BCG (untuk mencegah tuberkulosis)"
+      ]},
+      { usia: "Usia 2 Bulan", items: [
+        "DPT-HB-Hib dosis pertama (vaksin kombinasi untuk Difteri, Pertusis, Tetanus, Hepatitis B, dan Haemophilus influenzae tipe b)",
+        "Polio dosis kedua (Polio 1)",
+        "Hepatitis B dosis kedua (Hepatitis B 1)",
+        "PCV dosis pertama (vaksin pneumokokus)",
+        "Rotavirus dosis pertama"
+      ]},
+      { usia: "Usia 3 Bulan", items: [
+        "DPT-HB-Hib dosis kedua",
+        "Polio dosis ketiga (Polio 2)",
+        "Hepatitis B dosis ketiga"
+      ]},
+      { usia: "Usia 4 Bulan", items: [
+        "DPT-HB-Hib dosis ketiga",
+        "Polio dosis keempat (Polio 3)",
+        "Hepatitis B dosis keempat",
+        "PCV dosis kedua",
+        "Rotavirus dosis kedua"
+      ]},
+      { usia: "Usia 6 Bulan", items: [
+        "PCV dosis ketiga",
+        "Rotavirus dosis ketiga (jika menggunakan vaksin pentavalen)",
+        "Influenza dosis pertama (opsional, mulai usia 6 bulan)"
+      ]},
+      { usia: "Usia 9 Bulan", items: [
+        "Imunisasi MR (Measles-Rubella) atau vaksin campak"
+      ]},
+      { usia: "Usia 18 Bulan", items: [
+        "Booster DPT-HB-Hib dosis keempat",
+        "Booster Polio dosis kelima",
+        "Booster Hepatitis B dosis kelima",
+        "Booster Hib dosis keempat (biasanya sudah termasuk dalam vaksin kombinasi)",
+        "Booster MR/MMR dosis kedua"
+      ]}
+    ];
+
+    // Ambil data imunisasi dari localStorage sesuai nik
+    const savedDataRaw = localStorage.getItem(`imunisasi_${nik}`);
+    const savedData = savedDataRaw ? JSON.parse(savedDataRaw) : {};
+
+    // Tampilkan data imunisasi
+    imunisasiData.forEach(section => {
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = "imunisasi-group";
+      const h3 = document.createElement('h3');
+      h3.textContent = section.usia;
+      sectionDiv.appendChild(h3);
+
+      section.items.forEach((item, idx) => {
+        const id = section.usia.replace(/\s+/g, '') + '_' + idx;
+        const statusData = savedData.imunisasi && savedData.imunisasi[id] ? savedData.imunisasi[id] : null;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = "imunisasi-item";
+
+        const label = document.createElement('label');
+        label.textContent = item;
+
+        const statusSpan = document.createElement('span');
+        statusSpan.className = "status";
+        if (statusData && statusData.done) {
+          statusSpan.textContent = "Sudah Imunisasi";
+          statusSpan.classList.add("done");
+          if (statusData.date) {
+            const dateSpan = document.createElement('span');
+            dateSpan.className = "status-date";
+            dateSpan.textContent = `(Tanggal: ${statusData.date})`;
+            statusSpan.appendChild(dateSpan);
+          }
+        } else {
+          statusSpan.textContent = "Belum Imunisasi";
+          statusSpan.classList.add("pending");
+        }
+
+        itemDiv.appendChild(label);
+        itemDiv.appendChild(statusSpan);
+
+        sectionDiv.appendChild(itemDiv);
+      });
+
+      imunisasiContainer.appendChild(sectionDiv);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>P4K Ibu - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+  input[type="text"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #b71c1c;
+    box-sizing: border-box;
+  }
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #b71c1c;
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+  }
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+  .checkbox-group label {
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+    color: #b71c1c;
+    display: flex;
+    align-items: center;
+  }
+  .checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #b71c1c;
+    cursor: pointer;
+  }
+  button {
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background-color: #7f1212;
+  }
+  .error-message {
+    color: red;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    display: none;
+  }
+  #nikSection {
+    max-width: 400px;
+    margin: 0 auto 30px;
+    text-align: center;
+  }
+  #nikSection input[type="text"] {
+    width: 70%;
+    display: inline-block;
+  }
+  #nikSection button {
+    width: 25%;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 10px 0;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>P4K Ibu</h1>
+</header>
+
+<main>
+  <section id="nikSection">
+    <label for="nikInput"><strong>Masukkan NIK / Kode Unik Ibu</strong></label><br />
+    <input type="text" id="nikInput" placeholder="Masukkan NIK atau kode unik" />
+    <button id="btnLoad">Cari Data</button>
+    <div id="nikError" class="error-message"></div>
+  </section>
+
+  <section id="formSection" style="display:none;">
+    <h2>Data Perencanaan Persalinan dan Pencegahan Komplikasi (P4K)</h2>
+    <form id="p4kForm" autocomplete="off" novalidate>
+      <div class="error-message" id="formError"></div>
+
+      <div class="form-group">
+        <label for="tempatPersalinan">Tempat Persalinan</label>
+        <input type="text" id="tempatPersalinan" name="tempatPersalinan" placeholder="Contoh: Rumah Sakit XYZ" required />
+      </div>
+
+      <div class="form-group">
+        <label for="penolongPersalinan">Penolong Persalinan</label>
+        <input type="text" id="penolongPersalinan" name="penolongPersalinan" placeholder="Contoh: Bidan, Dokter" required />
+      </div>
+
+      <div class="form-group">
+        <label for="pendampingPersalinan">Pendamping Persalinan</label>
+        <input type="text" id="pendampingPersalinan" name="pendampingPersalinan" placeholder="Contoh: Suami, Keluarga" required />
+      </div>
+
+      <div class="form-group">
+        <label for="jadwalPersalinan">Jadwal Perkiraan Persalinan</label>
+        <input type="date" id="jadwalPersalinan" name="jadwalPersalinan" required />
+      </div>
+
+      <hr style="border-color:#b71c1c; margin: 25px 0;" />
+
+      <div class="form-group">
+        <label>Persiapan Transportasi</label>
+        <input type="text" id="transportasi" name="transportasi" placeholder="Contoh: Mobil pribadi, Ambulans" required />
+      </div>
+
+      <div class="form-group">
+        <label>Calon Donor Darah</label>
+        <input type="text" id="donorDarah" name="donorDarah" placeholder="Contoh: Nama keluarga atau tetangga" required />
+      </div>
+
+      <div class="form-group">
+        <label>Kesiapan Biaya</label>
+        <input type="text" id="kesiapanBiaya" name="kesiapanBiaya" placeholder="Contoh: Tabungan, Asuransi" required />
+      </div>
+
+      <div class="form-group">
+        <label>Pengenalan Tanda Bahaya Kehamilan dan Persalinan</label>
+        <textarea id="tandaBahaya" name="tandaBahaya" placeholder="Tuliskan tanda bahaya yang dikenali" rows="4" required></textarea>
+      </div>
+
+      <button type="submit">Simpan Data P4K</button>
+    </form>
+  </section>
+</main>
+
+<script>
+  const nikInput = document.getElementById('nikInput');
+  const btnLoad = document.getElementById('btnLoad');
+  const nikError = document.getElementById('nikError');
+  const formSection = document.getElementById('formSection');
+  const p4kForm = document.getElementById('p4kForm');
+  const formError = document.getElementById('formError');
+
+  btnLoad.addEventListener('click', () => {
+    const nik = nikInput.value.trim();
+    nikError.style.display = 'none';
+    formError.style.display = 'none';
+
+    if (!nik) {
+      nikError.textContent = "NIK / Kode unik wajib diisi.";
+      nikError.style.display = 'block';
+      formSection.style.display = 'none';
+      return;
+    }
+
+    // Cek data di localStorage
+    const dataKey = `p4k_ibu_${nik}`;
+    const storedData = JSON.parse(localStorage.getItem(dataKey) || '{}');
+
+    // Tampilkan form dan isi data jika ada
+    formSection.style.display = 'block';
+
+    if (storedData && Object.keys(storedData).length > 0) {
+      p4kForm.tempatPersalinan.value = storedData.tempatPersalinan || '';
+      p4kForm.penolongPersalinan.value = storedData.penolongPersalinan || '';
+      p4kForm.pendampingPersalinan.value = storedData.pendampingPersalinan || '';
+      p4kForm.jadwalPersalinan.value = storedData.jadwalPersalinan || '';
+      p4kForm.transportasi.value = storedData.transportasi || '';
+      p4kForm.donorDarah.value = storedData.donorDarah || '';
+      p4kForm.kesiapanBiaya.value = storedData.kesiapanBiaya || '';
+      p4kForm.tandaBahaya.value = storedData.tandaBahaya || '';
+    } else {
+      p4kForm.reset();
+    }
+  });
+
+  p4kForm.addEventListener('submit', e => {
+    e.preventDefault();
+    formError.style.display = 'none';
+
+    const nik = nikInput.value.trim();
+    if (!nik) {
+      nikError.textContent = "NIK / Kode unik wajib diisi.";
+      nikError.style.display = 'block';
+      return;
+    }
+
+    // Validasi sederhana semua wajib diisi
+    const fields = [
+      'tempatPersalinan', 'penolongPersalinan', 'pendampingPersalinan', 'jadwalPersalinan',
+      'transportasi', 'donorDarah', 'kesiapanBiaya', 'tandaBahaya'
+    ];
+    for (const field of fields) {
+      if (!p4kForm[field].value.trim()) {
+        formError.textContent = "Semua data harus diisi dengan lengkap.";
+        formError.style.display = 'block';
+        return;
+      }
+    }
+
+    // Simpan data ke localStorage
+    const dataKey = `p4k_ibu_${nik}`;
+    const dataToSave = {
+      tempatPersalinan: p4kForm.tempatPersalinan.value.trim(),
+      penolongPersalinan: p4kForm.penolongPersalinan.value.trim(),
+      pendampingPersalinan: p4kForm.pendampingPersalinan.value.trim(),
+      jadwalPersalinan: p4kForm.jadwalPersalinan.value,
+      transportasi: p4kForm.transportasi.value.trim(),
+      donorDarah: p4kForm.donorDarah.value.trim(),
+      kesiapanBiaya: p4kForm.kesiapanBiaya.value.trim(),
+      tandaBahaya: p4kForm.tandaBahaya.value.trim()
+    };
+    localStorage.setItem(dataKey, JSON.stringify(dataToSave));
+
+    alert("Data P4K berhasil disimpan.");
+  });
+
+  // Suara klik aktif
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+</script>
+</body>
+</html>

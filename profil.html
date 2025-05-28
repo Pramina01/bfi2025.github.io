@@ -113,7 +113,6 @@
       box-sizing: border-box;
       margin-bottom: 15px;
       user-select: none;
-      /* readonly to disable keyboard */
       caret-color: transparent;
     }
     #pin:focus {
@@ -226,6 +225,10 @@
     <h2>Profil Pengguna</h2>
     <div class="profile-card" aria-label="Data Profil Pengguna">
       <div class="profile-row">
+        <div class="profile-label">NIK</div>
+        <div class="profile-value" id="nik">-</div>
+      </div>
+      <div class="profile-row">
         <div class="profile-label">Nama</div>
         <div class="profile-value" id="nama">-</div>
       </div>
@@ -264,7 +267,6 @@
     <div class="spinner"></div>
     Memproses...
   </div>
-
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxsdCojzSCk88fCVXF7FXg0oU3RtQTKkPGcBBf9H678Zqb7C8pk7yPO0Qhwm1TTudU/exec"; // Ganti dengan URL Web App kamu
     const loading = document.getElementById('loading');
@@ -295,6 +297,8 @@
       alert("NIK tidak ditemukan. Silakan scan ulang QR code.");
       window.location.href = "login.html";
     }
+    // Tampilkan NIK di profil
+    document.getElementById('nik').innerText = nik;
 
     // Ambil data profil dari API
     function fetchProfile() {
@@ -310,6 +314,18 @@
             document.getElementById('nama').innerText = data.nama;
             document.getElementById('umur').innerText = data.umur;
             document.getElementById('alamat').innerText = data.alamat;
+
+            // ===== TAMBAHAN: SIMPAN PROFIL DI LOCALSTORAGE BERDASARKAN NIK =====
+            if (nik) {
+              const profileKey = `profil_${nik}`;
+              localStorage.setItem(profileKey, JSON.stringify({
+                nama: data.nama,
+                umur: data.umur,
+                alamat: data.alamat,
+                nik: nik
+              }));
+            }
+            // ===================================================================
           }
         })
         .catch(() => {

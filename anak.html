@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anak - PRAMINA</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #b71c1c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      width: 100%;
+      background-color: #b71c1c;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      flex-grow: 1;
+    }
+    #btnLogout {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: white;
+      color: #b71c1c;
+      border: 2px solid white;
+      border-radius: 5px;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #btnLogout:hover {
+      background-color: #7f1212;
+      color: white;
+      border-color: white;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin: 40px 15px 40px 15px;
+      text-align: center;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 1.7rem;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
+    .fitur-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+      gap: 25px;
+      justify-items: center;
+    }
+    .fitur-btn {
+      background-color: #fff0f0;
+      border: 2px solid #b71c1c;
+      border-radius: 12px;
+      width: 140px;
+      height: 140px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(183,28,28,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      color: #b71c1c;
+      font-weight: 700;
+      font-size: 1rem;
+      user-select: none;
+    }
+    .fitur-btn:hover, .fitur-btn:focus {
+      background-color: #b71c1c;
+      color: white;
+      box-shadow: 0 6px 16px rgba(183,28,28,0.3);
+      outline: none;
+    }
+    .fitur-btn img {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 12px;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+    @media (max-width: 360px) {
+      .fitur-btn {
+        width: 120px;
+        height: 120px;
+        font-size: 0.9rem;
+      }
+      .fitur-btn img {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo PRAMINA" />
+    <h1>PRAMINA</h1>
+    <button id="btnLogout" title="Keluar">Keluar</button>
+  </header>
+
+  <main>
+    <h2>PILIHAN FITUR</h2>
+    <div class="fitur-grid">
+      <a href="data_anak.html" class="fitur-btn" tabindex="0">
+        <img src="8.png" alt="Logo Data Anak" />
+        DATA ANAK
+      </a>
+      <a href="jadwal_imunisasi.html" class="fitur-btn" tabindex="0">
+        <img src="9.png" alt="Logo Jadwal Imunisasi" />
+        JADWAL IMUNIASI
+      </a>
+      <a href="cek_motorik.html" class="fitur-btn" tabindex="0">
+        <img src="10.png" alt="Logo Cek Motorik" />
+        CEK MOTORIK
+      </a>
+      <a href="cek_stunting.html" class="fitur-btn" tabindex="0">
+        <img src="11.png" alt="Logo Cek Stunting" />
+        CEK STUNTING
+      </a>
+      <a href="skrinning_penyakit_anak.html" class="fitur-btn" tabindex="0">
+        <img src="3.png" alt="Logo Skrining Penyakit Anak" />
+        SKRINING PENYAKIT ANAK
+      </a>
+      <a href="tanya_mina.html" class="fitur-btn" tabindex="0">
+        <img src="7.png" alt="Logo Tanya AI" />
+        TANYA MINA
+      </a>
+    </div>
+  </main>
+
+  <script>
+    // Tombol Keluar
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+
+    // Suara klik
+    const clickSound = new Audio('klik.mp3');
+    document.body.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }, true);
+  </script>
+</body>
+</html>

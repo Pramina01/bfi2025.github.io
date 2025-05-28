@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kesiapan Melahirkan - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #b71c1c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background-color: #b71c1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    position: relative;
+  }
+  header img {
+    height: 40px;
+    margin-right: 15px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    flex-grow: 1;
+  }
+  #btnBack, #btnLogout {
+    background-color: white;
+    color: #b71c1c;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #btnBack { right: 100px; }
+  #btnLogout { right: 20px; }
+  #btnBack:hover, #btnLogout:hover {
+    background-color: #7f1212;
+    color: white;
+    border-color: white;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 40px 15px 40px 15px;
+    background: #fff0f0;
+    border: 2px solid #b71c1c;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 12px rgba(183,28,28,0.15);
+    box-sizing: border-box;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .data-group {
+    margin-bottom: 20px;
+  }
+  .data-label {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #7f1212;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #b71c1c;
+    padding-bottom: 4px;
+  }
+  .data-value {
+    font-size: 1rem;
+    color: #b71c1c;
+    background-color: #f8dede;
+    padding: 10px 14px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    box-shadow: inset 0 1px 3px rgba(183,28,28,0.1);
+  }
+  .no-data {
+    text-align: center;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #7f1212;
+    margin-top: 40px;
+  }
+  #btnRujukan {
+    display: inline-block;
+    background-color: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease;
+    margin: 20px auto 0;
+    display: none;
+  }
+  #btnRujukan:hover {
+    background-color: #7f1212;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo PRAMINA" />
+  <h1>PRAMINA</h1>
+  <button id="btnBack" title="Kembali">Kembali</button>
+  <button id="btnLogout" title="Keluar">Keluar</button>
+</header>
+
+<main>
+  <h2>Perencanaan Persalinan dan Pencegahan Komplikasi</h2>
+  <div id="dataContainer">
+    <!-- Data kesiapan melahirkan akan tampil di sini -->
+  </div>
+  <button id="btnRujukan">Buat Rujukan Persalinan</button>
+</main>
+
+<script>
+  // Tombol Kembali dan Keluar
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = "ibu.html";
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    window.location.href = "index.html";
+  });
+
+  // Suara klik aktif
+  const clickSound = new Audio('klik.mp3');
+  document.body.addEventListener('click', () => {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }, true);
+
+  const dataContainer = document.getElementById('dataContainer');
+  const btnRujukan = document.getElementById('btnRujukan');
+  const nik = sessionStorage.getItem('nik');
+
+  if (!nik) {
+    alert("NIK tidak ditemukan, silakan login ulang.");
+    window.location.href = "login.html";
+  } else {
+    const dataKey = `p4k_ibu_${nik}`;
+    const data = JSON.parse(localStorage.getItem(dataKey) || '{}');
+
+    if (!data || Object.keys(data).length === 0) {
+      dataContainer.innerHTML = `<p class="no-data">Data kesiapan melahirkan belum tersedia untuk NIK: <strong>${nik}</strong>.</p>`;
+      btnRujukan.style.display = "none";
+    } else {
+      let html = '';
+
+      html += `<div class="data-group">
+        <div class="data-label">Tempat Persalinan</div>
+        <div class="data-value">${data.tempatPersalinan || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Penolong Persalinan</div>
+        <div class="data-value">${data.penolongPersalinan || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Pendamping Persalinan</div>
+        <div class="data-value">${data.pendampingPersalinan || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Jadwal Perkiraan Persalinan</div>
+        <div class="data-value">${data.jadwalPersalinan || '-'}</div>
+      </div>`;
+
+      html += `<hr style="border-color:#b71c1c; margin: 25px 0;" />`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Persiapan Transportasi</div>
+        <div class="data-value">${data.transportasi || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Calon Donor Darah</div>
+        <div class="data-value">${data.donorDarah || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Kesiapan Biaya</div>
+        <div class="data-value">${data.kesiapanBiaya || '-'}</div>
+      </div>`;
+
+      html += `<div class="data-group">
+        <div class="data-label">Pengenalan Tanda Bahaya Kehamilan dan Persalinan</div>
+        <div class="data-value">${data.tandaBahaya || '-'}</div>
+      </div>`;
+
+      dataContainer.innerHTML = html;
+      btnRujukan.style.display = "inline-block";
+    }
+  }
+
+  btnRujukan.addEventListener('click', () => {
+    window.location.href = 'rujukan.html';
+  });
+</script>
+</body>
+</html>

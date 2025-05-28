@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jadwal Imunisasi - PRAMINA</title>
+<style>
+  body {
+    margin: 0; padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff0f0;
+    color: #b71c1c;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 25px 20px;
+    box-shadow: 0 6px 20px rgba(183,28,28,0.15);
+  }
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  #nikDisplay {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .announcement {
+    background: #ffeaea;
+    border-left: 6px solid #b71c1c;
+    padding: 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5;
+    user-select: none;
+  }
+  .vaccine-list {
+    margin-top: 15px;
+    padding-left: 20px;
+  }
+  .vaccine-list li {
+    margin-bottom: 12px;
+  }
+  .done {
+    color: #388e3c;
+    font-weight: 700;
+  }
+  .pending {
+    color: #d32f2f;
+    font-weight: 700;
+  }
+  .date-info {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #7f1212;
+    margin-left: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Jadwal Imunisasi</h1>
+    <div id="nikDisplay">NIK: Memuat...</div>
+    <div class="announcement" id="announcement">
+      Memuat data imunisasi...
+    </div>
+  </div>
+
+<script>
+  const nik = sessionStorage.getItem('nik');
+  const nikDisplay = document.getElementById('nikDisplay');
+  const announcement = document.getElementById('announcement');
+
+  if (!nik) {
+    alert("NIK tidak ditemukan, silakan login ulang.");
+    window.location.href = "mobile.html";
+  } else {
+    nikDisplay.textContent = `NIK: ${nik}`;
+
+    // Data vaksin lengkap dengan jadwal usia (referensi IDAI/Siloam dll)
+    const imunisasiData = [
+      { usia: "Saat Lahir (0 bulan)", items: [
+        "Hepatitis B dosis pertama (Hep B 0)",
+        "Polio dosis pertama (Polio 0)",
+        "BCG (untuk mencegah tuberkulosis)"
+      ]},
+      { usia: "Usia 2 Bulan", items: [
+        "DPT-HB-Hib dosis pertama",
+        "Polio dosis kedua (Polio 1)",
+        "Hepatitis B dosis kedua",
+        "PCV dosis pertama",
+        "Rotavirus dosis pertama"
+      ]},
+      { usia: "Usia 3 Bulan", items: [
+        "DPT-HB-Hib dosis kedua",
+        "Polio dosis ketiga (Polio 2)",
+        "Hepatitis B dosis ketiga"
+      ]},
+      { usia: "Usia 4 Bulan", items: [
+        "DPT-HB-Hib dosis ketiga",
+        "Polio dosis keempat (Polio 3)",
+        "Hepatitis B dosis keempat",
+        "PCV dosis kedua",
+        "Rotavirus dosis kedua"
+      ]},
+      { usia: "Usia 6 Bulan", items: [
+        "PCV dosis ketiga",
+        "Rotavirus dosis ketiga (jika menggunakan vaksin pentavalen)",
+        "Influenza dosis pertama (opsional)"
+      ]},
+      { usia: "Usia 9 Bulan", items: [
+        "Imunisasi MR (Measles-Rubella) atau vaksin campak"
+      ]},
+      { usia: "Usia 18 Bulan", items: [
+        "Booster DPT-HB-Hib dosis keempat",
+        "Booster Polio dosis kelima",
+        "Booster Hepatitis B dosis kelima",
+        "Booster Hib dosis keempat",
+        "Booster MR/MMR dosis kedua"
+      ]}
+    ];
+
+    // Ambil data imunisasi tersimpan dari localStorage
+    const savedDataRaw = localStorage.getItem(`imunisasi_${nik}`);
+    const savedData = savedDataRaw ? JSON.parse(savedDataRaw) : {};
+    const imunisasiStatus = savedData.imunisasi || {};
+
+    // Buat daftar vaksin dengan status dan tanggal pelaksanaan
+    let vaksinDone = [];
+    let vaksinPending = [];
+
+    imunisasiData.forEach(section => {
+      section.items.forEach((item, idx) => {
+        const id = section.usia.replace(/\s+/g, '') + '_' + idx;
+        const status = imunisasiStatus[id];
+        if (status && status.done) {
+          vaksinDone.push({ nama: item, tanggal: status.date || null });
+        } else {
+          vaksinPending.push({ nama: item, jadwal: section.usia });
+        }
+      });
+    });
+
+    let html = '';
+
+    if (vaksinPending.length === 0) {
+      html += `<p>Semua imunisasi sesuai jadwal telah dilakukan. Terima kasih telah menjaga kesehatan anak Anda.</p>`;
+    } else {
+      html += `<p><strong>Vaksin yang belum imunisasi (jadwal sesuai usia):</strong></p><ul class="vaccine-list">`;
+      vaksinPending.forEach(v => {
+        html += `<li class="pending">${v.nama} <span class="date-info">(Jadwal: ${v.jadwal})</span></li>`;
+      });
+      html += `</ul>`;
+    }
+
+    if (vaksinDone.length > 0) {
+      html += `<p style="margin-top:20px;"><strong>Vaksin yang sudah dilakukan:</strong></p><ul class="vaccine-list">`;
+      vaksinDone.forEach(v => {
+        html += `<li class="done">${v.nama}`;
+        if (v.tanggal) {
+          html += ` <span class="date-info">(Dilaksanakan: ${v.tanggal})</span>`;
+        }
+        html += `</li>`;
+      });
+      html += `</ul>`;
+    }
+
+    announcement.innerHTML = html;
+  }
+</script>
+</body>
+</html>
