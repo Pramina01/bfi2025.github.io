@@ -2,113 +2,195 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Rujukan PRAMINA</title>
+  <title>Form Rujukan PRAMINA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: monospace; padding: 20px; background: #f5f7fa; }
-    form { max-width: 280px; margin: auto; background: #fff; padding: 15px; border-radius: 8px; }
-    label { display: block; margin-top: 10px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #007B8F;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+    }
     input, select, textarea {
-      width: 100%; padding: 8px; margin-top: 5px;
-      border: 1px solid #ccc; border-radius: 5px;
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     button {
-      margin-top: 15px; padding: 10px; width: 100%;
-      background: #007B8F; color: white; border: none;
-      border-radius: 5px; cursor: pointer;
+      margin-top: 20px;
+      background-color: #007B8F;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      width: 100%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .keyboard, .mic-btn {
+      margin-top: 5px;
+      display: inline-block;
+    }
+    .mic-btn {
+      background: #eee;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    #keyboard-virtual {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    #keyboard-virtual button {
+      width: 40px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .print-instruction {
+      margin-top: 30px;
+      font-size: 13px;
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>RUJUKAN PRAMINA</h1>
+    <h2>PEMERINTAH KABUPATEN BADUNG</h2>
 
-<h3 align="center">Form Rujukan PRAMINA</h3>
-<form id="formRujukan">
-  <label for="nik">NIK</label>
-  <input id="nik" type="text" required>
+    <form id="formRujukan">
+      <label for="nik">NIK</label>
+      <input id="nik" type="text" readonly onclick="activateKeyboard('nik')">
+      <div id="keyboard-virtual"></div>
 
-  <label for="faskes">Pilih Faskes</label>
-  <select id="faskes" required>
-    <option disabled selected>-- Pilih Faskes --</option>
-    <option>RSU Surya Husadha Nusadua - Kuta Selatan</option>
-    <option>RSU Bali Jimbaran - Kuta Selatan</option>
-    <option>RSU Garba Med - Kuta Utara</option>
-    <option>RS Siloam Bali - Kuta</option>
-    <option>RS Universitas Udayana - Kuta Selatan</option>
-    <option>Puskesmas Abiansemal I - Rawat Inap</option>
-    <option>Puskesmas Mengwi I - Rawat Inap</option>
-    <option>Puskesmas Kuta I - Rawat Inap</option>
-    <option>Puskesmas Petang I & II - Non Rawat Inap</option>
-    <option>Puskesmas Kuta Selatan - Non Rawat Inap</option>
-    <option>Puskesmas Kuta Utara - Non Rawat Inap</option>
-  </select>
+      <label for="faskes">Pilih Faskes</label>
+      <select id="faskes" required>
+        <option disabled selected>-- Pilih Faskes --</option>
+        <option>RSU Surya Husadha Nusadua - Kuta Selatan</option>
+        <option>RSU Bali Jimbaran - Kuta Selatan</option>
+        <option>RSU Garba Med - Kuta Utara</option>
+        <option>RS Siloam Bali - Kuta</option>
+        <option>RS Universitas Udayana - Kuta Selatan</option>
+        <option>Puskesmas Abiansemal I - Rawat Inap</option>
+        <option>Puskesmas Mengwi I - Rawat Inap</option>
+        <option>Puskesmas Kuta I - Rawat Inap</option>
+        <option>Puskesmas Petang I & II - Non Rawat Inap</option>
+        <option>Puskesmas Kuta Selatan - Non Rawat Inap</option>
+        <option>Puskesmas Kuta Utara - Non Rawat Inap</option>
+      </select>
 
-  <label for="poli">Pilih Poli</label>
-  <select id="poli" required>
-    <option disabled selected>-- Pilih Poli --</option>
-    <option>Poli Gizi</option>
-    <option>Poli KIA</option>
-    <option>Poli Anak</option>
-    <option>Poli Jiwa</option>
-  </select>
+      <label for="poli">Pilih Poli</label>
+      <select id="poli" required>
+        <option disabled selected>-- Pilih Poli --</option>
+        <option>Poli Gizi</option>
+        <option>Poli KIA</option>
+        <option>Poli Anak</option>
+        <option>Poli Jiwa</option>
+      </select>
 
-  <label for="keluhan">Keluhan</label>
-  <textarea id="keluhan" rows="3" required></textarea>
+      <label for="keluhan">Keluhan</label>
+      <textarea id="keluhan" rows="3" required></textarea>
+      <span class="mic-btn" onclick="rekamSuara()">🎤 Rekam Suara</span>
 
-  <button type="button" onclick="buatRujukan()">🖨️ Buat & Cetak Otomatis</button>
-</form>
+      <button type="button" onclick="buatRujukan()">🖨️ Buat & Cetak</button>
+    </form>
 
-<script>
-function formatTanggal(date) {
-  const d = new Date(date);
-  return d.toLocaleDateString("id-ID", {
-    day: '2-digit', month: '2-digit', year: 'numeric'
-  });
-}
+    <div class="print-instruction">
+      <strong>Cara Penggunaan Surat Rujukan:</strong><br>
+      Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.
+    </div>
+  </div>
 
-function tambah3Bulan(date) {
-  const d = new Date(date);
-  d.setMonth(d.getMonth() + 3);
-  return d;
-}
+  <script>
+    let activeInput = '';
 
-function buatRujukan() {
-  const nik = document.getElementById("nik").value.trim();
-  const faskes = document.getElementById("faskes").value;
-  const poli = document.getElementById("poli").value;
-  const keluhan = document.getElementById("keluhan").value.trim();
+    function activateKeyboard(id) {
+      activeInput = id;
+      const keyboard = document.getElementById('keyboard-virtual');
+      const keys = ['1','2','3','4','5','6','7','8','9','0','C','←'];
+      keyboard.innerHTML = '';
+      keys.forEach(k => {
+        const btn = document.createElement('button');
+        btn.innerText = k;
+        btn.onclick = () => handleKey(k);
+        keyboard.appendChild(btn);
+      });
+    }
 
-  if (!nik || !faskes || !poli || !keluhan) {
-    alert("Harap lengkapi semua data.");
-    return;
-  }
+    function handleKey(k) {
+      const input = document.getElementById(activeInput);
+      if (k === '←') input.value = input.value.slice(0, -1);
+      else if (k === 'C') input.value = '';
+      else input.value += k;
+    }
 
-  const sekarang = new Date();
-  const masaBerlaku = tambah3Bulan(sekarang);
+    function rekamSuara() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'id-ID';
+      recognition.onresult = function(e) {
+        document.getElementById('keluhan').value = e.results[0][0].transcript;
+      };
+      recognition.start();
+    }
 
-  const tglInput = formatTanggal(sekarang);
-  const tglBerlaku = formatTanggal(masaBerlaku);
+    function formatTanggal(date) {
+      const d = new Date(date);
+      return d.toLocaleDateString("id-ID", { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
 
-  const isiCetak = `
-RUJUKAN PRAMINA
-PEMERINTAH KABUPATEN BADUNG
------------------------------
-NIK     : ${nik}
-FASKES  : ${faskes}
-POLI    : ${poli}
-KELUHAN : ${keluhan}
------------------------------
-TGL BUAT    : ${tglInput}
-BERLAKU S/D : ${tglBerlaku}
------------------------------
-`;
+    function tambah3Bulan(date) {
+      const d = new Date(date);
+      d.setMonth(d.getMonth() + 3);
+      return d;
+    }
 
-  const encoded = encodeURIComponent(isiCetak);
-  const rawbtUrl = `rawbt:print?text=${encoded}`;
+    function buatRujukan() {
+      const nik = document.getElementById("nik").value.trim();
+      const faskes = document.getElementById("faskes").value;
+      const poli = document.getElementById("poli").value;
+      const keluhan = document.getElementById("keluhan").value.trim();
 
-  // Redirect langsung ke RAWBT
-  window.location.href = rawbtUrl;
-}
-</script>
+      if (!nik || !faskes || !poli || !keluhan) {
+        alert("Harap lengkapi semua data.");
+        return;
+      }
 
+      const sekarang = new Date();
+      const masaBerlaku = tambah3Bulan(sekarang);
+
+      const tglInput = formatTanggal(sekarang);
+      const tglBerlaku = formatTanggal(masaBerlaku);
+
+      const isiCetak = `RUJUKAN PRAMINA\nPEMERINTAH KABUPATEN BADUNG\n-----------------------------\nNIK     : ${nik}\nFASKES  : ${faskes}\nPOLI    : ${poli}\nKELUHAN : ${keluhan}\n-----------------------------\nTGL BUAT    : ${tglInput}\nBERLAKU S/D : ${tglBerlaku}\n-----------------------------\nCATATAN: Harap membawa surat ini saat ke faskes. Berlaku 3 bulan.\n`;
+
+      const encoded = encodeURIComponent(isiCetak);
+      const rawbtUrl = `rawbt:print?text=${encoded}`;
+      window.location.href = rawbtUrl;
+    }
+  </script>
 </body>
 </html>
