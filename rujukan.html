@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rujukan PRAMINA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: monospace;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+    form, .print-area {
+      max-width: 220px; /* Approx 58mm */
+      background: white;
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin: auto;
+    }
+    .print-area {
+      display: none;
+    }
+    h2, h3 {
+      text-align: center;
+      margin: 0;
+      font-size: 14px;
+    }
+    .qrcode {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      background: #007B8F;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .print-area, .print-area * {
+        visibility: visible;
+      }
+      .print-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 58mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<form id="formRujukan">
+  <h2>Form Rujukan</h2>
+  <label for="nik">NIK</label>
+  <input id="nik" type="text">
+
+  <label for="faskes">Faskes</label>
+  <select id="faskes">
+    <option>RSU Surya Husadha Nusadua</option>
+    <option>Puskesmas Kuta Selatan</option>
+  </select>
+
+  <label for="poli">Poli</label>
+  <select id="poli">
+    <option>Poli Gizi</option>
+    <option>Poli Anak</option>
+  </select>
+
+  <label for="keluhan">Keluhan</label>
+  <textarea id="keluhan"></textarea>
+
+  <button type="button" onclick="generateRujukan()">🔍 Buat Rujukan & Cetak</button>
+</form>
+
+<!-- AREA CETAK -->
+<div class="print-area" id="hasilRujukan">
+  <h2>RUJUKAN PRAMINA</h2>
+  <h3>PEMERINTAH KABUPATEN BADUNG</h3>
+  <hr>
+  <p><strong>NIK:</strong> <span id="cetakNIK"></span></p>
+  <p><strong>Faskes:</strong> <span id="cetakFaskes"></span></p>
+  <p><strong>Poli:</strong> <span id="cetakPoli"></span></p>
+  <p><strong>Keluhan:</strong> <span id="cetakKeluhan"></span></p>
+  <p><strong>Waktu:</strong> <span id="cetakWaktu"></span></p>
+  <div class="qrcode" id="qrArea"></div>
+</div>
+
+<script>
+  function generateRujukan() {
+    const nik = document.getElementById('nik').value;
+    const faskes = document.getElementById('faskes').value;
+    const poli = document.getElementById('poli').value;
+    const keluhan = document.getElementById('keluhan').value;
+    const waktu = new Date().toLocaleString('id-ID');
+
+    document.getElementById('cetakNIK').innerText = nik;
+    document.getElementById('cetakFaskes').innerText = faskes;
+    document.getElementById('cetakPoli').innerText = poli;
+    document.getElementById('cetakKeluhan').innerText = keluhan;
+    document.getElementById('cetakWaktu').innerText = waktu;
+
+    const qrData = `NIK: ${nik}\nFaskes: ${faskes}\nPoli: ${poli}\nWaktu: ${waktu}`;
+    document.getElementById('qrArea').innerHTML = ''; // Clear previous QR
+    new QRCode(document.getElementById('qrArea'), {
+      text: qrData,
+      width: 100,
+      height: 100
+    });
+
+    document.getElementById('hasilRujukan').style.display = 'block';
+    setTimeout(() => {
+      window.print();
+    }, 300); // wait for QR render
+  }
+</script>
+
+</body>
+</html>
