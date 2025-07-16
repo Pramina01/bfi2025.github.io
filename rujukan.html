@@ -1,516 +1,234 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sistem Rujukan Kesehatan Ibu dan Anak - PRAMINA</title>
-<style>
-  /* Reset & base */
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    margin: 0;
-    background: #f9fcfd;
-    color: #1b1b1b;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-  }
-  .container {
-    max-width: 640px;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: 0 3px 12px rgb(0 0 0 / 0.1);
-    padding: 24px 32px 36px 32px;
-    width: 100%;
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 24px;
-    color: #007b8f;
-    user-select: none;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  label {
-    font-weight: 600;
-    margin-bottom: 6px;
-    user-select: none;
-  }
-
-  input[type="text"], select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 16px;
-    border: 2.5px solid #007b8f;
-    border-radius: 5px;
-    outline-offset: 2px;
-    transition:
-      outline-offset 0.2s ease,
-      border-color 0.2s ease;
-    font-family: inherit;
-  }
-  input[type="text"]:focus, select:focus, textarea:focus {
-    border-color: #004852;
-    outline-offset: 4px;
-  }
-
-  /* Disable pointer for keluhan textarea */
-  textarea[readonly] {
-    background-color: #e0f2f7;
-    color: #004852;
-    cursor: default;
-    resize: none;
-  }
-
-  textarea {
-    height: 100px;
-    resize: vertical;
-  }
-
-  /* Keyboard Virtual NIK style */
-  #keyboard {
-    margin-top: 10px;
-    user-select: none;
-    display: none;
-    width: 100%;
-    background: #e0f2f7;
-    border-radius: 5px;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-  #keyboard .row {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 6px;
-  }
-  #keyboard button {
-    flex: 1;
-    max-width: 40px;
-    margin: 0 4px;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: 600;
-    border: 2px solid #007b8f;
-    border-radius: 5px;
-    background: white;
-    color: #007b8f;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.15s ease;
-  }
-  #keyboard button:active {
-    background: #007b8f;
-    color: white;
-  }
-  #keyboard button.wide {
-    max-width: 90px;
-  }
-
-  /* Button main */
-  button#btn-submit {
-    background-color: #007b8f;
-    border: none;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    padding: 12px 10px;
-    border-radius: 7px;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 6px 12px rgb(0 123 143 / 0.44);
-    transition:
-      background-color 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-  button#btn-submit:hover {
-    background-color: #004852;
-  }
-  button#btn-submit:active {
-    box-shadow: 0 3px 6px rgb(0 123 143 / 0.55);
-  }
-
-  /* Mic button */
-  #mic-btn {
-    margin-left: 8px;
-    background: #007b8f;
-    border: none;
-    color: white;
-    font-size: 22px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 5px 10px rgb(0 123 143 / 0.5);
-    transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-  }
-  #mic-btn:hover {
-    background-color: #004852;
-  }
-  #mic-btn.recording {
-    background-color: #ef4444;
-    box-shadow: 0 0 12px #ef4444cc;
-  }
-
-  /* Output Rujukan Box */
-  #output-rujukan {
-    white-space: pre-wrap;
-    font-family: monospace, monospace;
-    background: #e3f6ff;
-    color: #004852;
-    padding: 14px 18px;
-    border-radius: 6px;
-    margin-top: 28px;
-    border: 1.5px solid #007b8f;
-  }
-
-  /* Instructions */
-  #instructions {
-    margin-top: 30px;
-    font-size: 14px;
-    line-height: 1.52;
-    background: #f0f8ff;
-    padding: 18px 22px;
-    border: 1.8px solid #007b8f;
-    border-radius: 6px;
-    color: #005a71;
-  }
-  #instructions ul {
-    margin-top: 8px;
-    padding-left: 20px;
-  }
-
-  /* Responsive for laptops */
-  @media screen and (max-width: 720px) {
+  <meta charset="UTF-8">
+  <title>Sistem Rujukan PRAMINA</title>
+  <style>
     body {
-      padding: 12px 15px;
+      font-family: Arial, sans-serif;
+      background-color: #f4f9fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
     }
     .container {
-      padding: 20px 24px 28px 24px;
+      max-width: 800px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-  }
-</style>
+    h1 {
+      text-align: center;
+      color: #007B8F;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    textarea {
+      resize: none;
+      pointer-events: none;
+      background-color: #f0f0f0;
+      color: #555;
+    }
+    .btn {
+      margin-top: 30px;
+      background-color: #007B8F;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #005f6b;
+    }
+    #keyboard {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: #eee;
+      border-radius: 8px;
+    }
+    .key {
+      display: inline-block;
+      padding: 12px 16px;
+      margin: 4px;
+      background: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #rekam {
+      margin-top: 10px;
+      display: inline-block;
+      background-color: #007B8F;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      border: none;
+    }
+    ul.instructions {
+      margin-top: 30px;
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    ul.instructions li {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-<div class="container" role="main" aria-labelledby="form-title">
+  <div class="container">
+    <h1>Rujukan Kesehatan Ibu & Anak</h1>
 
-  <h1 id="form-title">Sistem Rujukan Kesehatan Ibu dan Anak - PRAMINA</h1>
+    <label for="nik">NIK:</label>
+    <input type="text" id="nik" readonly onclick="toggleKeyboard(true)">
+    <div id="keyboard"></div>
 
-  <form id="form-rujukan" autocomplete="off" novalidate>
-    <div>
-      <label for="nik-input">NIK (Nomor Induk Kependudukan)</label>
-      <input type="text" id="nik-input" name="nik" maxlength="16" placeholder="Klik untuk isi NIK" readonly aria-describedby="keyboard-desc" aria-required="true" autocomplete="off" />
-      <div id="keyboard-desc" class="visually-hidden">Gunakan keyboard virtual di bawah untuk memasukkan angka NIK</div>
-      <div id="keyboard" role="application" aria-label="Keyboard virtual angka untuk NIK">
-        <div class="row" role="row">
-          <button type="button" role="button" aria-label="Angka 1">1</button>
-          <button type="button" role="button" aria-label="Angka 2">2</button>
-          <button type="button" role="button" aria-label="Angka 3">3</button>
-          <button type="button" role="button" aria-label="Hapus" class="wide" data-action="backspace">⌫</button>
-        </div>
-        <div class="row" role="row">
-          <button type="button" role="button" aria-label="Angka 4">4</button>
-          <button type="button" role="button" aria-label="Angka 5">5</button>
-          <button type="button" role="button" aria-label="Angka 6">6</button>
-          <button type="button" role="button" aria-label="Kosongkan NIK" class="wide" data-action="clear">Clear</button>
-        </div>
-        <div class="row" role="row">
-          <button type="button" role="button" aria-label="Angka 7">7</button>
-          <button type="button" role="button" aria-label="Angka 8">8</button>
-          <button type="button" role="button" aria-label="Angka 9">9</button>
-          <button type="button" role="button" aria-label="Kosong" class="wide" disabled></button>
-        </div>
-        <div class="row" role="row">
-          <button type="button" role="button" aria-label="Angka 0" style="flex-grow:1;">0</button>
-        </div>
-      </div>
-    </div>
+    <label for="faskes">Faskes Tujuan:</label>
+    <select id="faskes">
+      <option>RSU Surya Husadha Nusadua – Kuta Selatan</option>
+      <option>RSU Bali Jimbaran – Kuta Selatan</option>
+      <option>RSU Garba Med – Kuta Utara</option>
+      <option>RS Siloam Bali – Kuta</option>
+      <option>RS Universitas Udayana – Kuta Selatan</option>
+      <option>Puskesmas Abiansemal I – Rawat Inap</option>
+      <option>Puskesmas Mengwi I – Rawat Inap</option>
+      <option>Puskesmas Kuta I – Rawat Inap</option>
+      <option>Puskesmas Petang I & II – Non Rawat Inap</option>
+      <option>Puskesmas Kuta Selatan – Non Rawat Inap</option>
+      <option>Puskesmas Kuta Utara – Non Rawat Inap</option>
+    </select>
 
-    <div>
-      <label for="faskes-select">Fasilitas Kesehatan Tujuan</label>
-      <select id="faskes-select" name="faskes" required aria-required="true" aria-describedby="faskes-desc">
-        <option value="" disabled selected>-- Pilih Fasilitas Kesehatan --</option>
-        <optgroup label="Rumah Sakit">
-          <option value="RSU Surya Husadha Nusadua - Kuta Selatan">RSU Surya Husadha Nusadua – Kuta Selatan</option>
-          <option value="RSU Bali Jimbaran - Kuta Selatan">RSU Bali Jimbaran – Kuta Selatan</option>
-          <option value="RSU Garba Med - Kuta Utara">RSU Garba Med – Kuta Utara</option>
-          <option value="RS Siloam Bali - Kuta">RS Siloam Bali – Kuta</option>
-          <option value="RS Universitas Udayana - Kuta Selatan">RS Universitas Udayana – Kuta Selatan</option>
-        </optgroup>
-        <optgroup label="Puskesmas">
-          <option value="Puskesmas Abiansemal I - Rawat Inap">Puskesmas Abiansemal I – Rawat Inap</option>
-          <option value="Puskesmas Mengwi I - Rawat Inap">Puskesmas Mengwi I – Rawat Inap</option>
-          <option value="Puskesmas Kuta I - Rawat Inap">Puskesmas Kuta I – Rawat Inap</option>
-          <option value="Puskesmas Petang I & II - Non Rawat Inap">Puskesmas Petang I & II – Non Rawat Inap</option>
-          <option value="Puskesmas Kuta Selatan - Non Rawat Inap">Puskesmas Kuta Selatan – Non Rawat Inap</option>
-          <option value="Puskesmas Kuta Utara - Non Rawat Inap">Puskesmas Kuta Utara – Non Rawat Inap</option>
-        </optgroup>
-      </select>
-      <div id="faskes-desc" class="visually-hidden">Pilih fasilitas kesehatan tujuan rujukan</div>
-    </div>
+    <label for="poli">Poli Tujuan:</label>
+    <select id="poli">
+      <option>Poli Gizi</option>
+      <option>Poli KIA</option>
+      <option>Poli Anak</option>
+      <option>Poli Jiwa</option>
+    </select>
 
-    <div>
-      <label for="keluhan-textarea">Keluhan (Hanya lewat suara)</label>
-      <div style="display:flex; align-items:center;">
-        <textarea id="keluhan-textarea" name="keluhan" placeholder="Gunakan tombol rekam suara untuk input keluhan" aria-required="true" required readonly></textarea>
-        <button type="button" aria-label="Rekam suara keluhan" id="mic-btn" title="Rekam Suara">🎤</button>
-      </div>
-      <div id="mic-status" aria-live="polite" style="font-size:14px; margin-top:4px; color:#004852;"></div>
-    </div>
+    <label for="keluhan">Keluhan (Hanya Bisa Isi Suara):</label>
+    <textarea id="keluhan" rows="4" placeholder="Gunakan tombol Rekam Suara untuk mengisi..." readonly></textarea>
+    <button id="rekam">🎤 Rekam Suara</button>
 
-    <button type="submit" id="btn-submit" aria-live="polite" aria-atomic="true">Buat &amp; Cetak Rujukan</button>
-  </form>
+    <button class="btn" onclick="cetakRujukan()">Buat & Cetak</button>
 
-  <pre id="output-rujukan" aria-live="polite" aria-atomic="true" style="display:none;"></pre>
-
-  <section id="instructions" aria-label="Instruksi Penggunaan Surat Rujukan">
-    <strong>Cara Penggunaan Surat Rujukan:</strong>
-    <ul>
-      <li>Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih.</li>
-      <li>Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan.</li>
-      <li>Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan.</li>
-      <li>Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat.</li>
-      <li>Simpan surat ini dengan baik sebagai bukti rujukan resmi.</li>
+    <ul class="instructions">
+      <strong>Cara Penggunaan Surat Rujukan:</strong>
+      <li>Surat ini hanya berlaku untuk pelayanan kesehatan ibu dan anak.</li>
+      <li>Gunakan di fasilitas kesehatan yang tercantum dalam surat.</li>
+      <li>Berlaku selama 3 bulan sejak tanggal penerbitan.</li>
+      <li>Bawa surat ini saat kunjungan ke faskes tujuan.</li>
+      <li>Jika masa berlaku habis, ajukan ulang melalui sistem PRAMINA atau petugas kesehatan.</li>
+      <li>Simpan surat ini sebagai bukti rujukan resmi.</li>
     </ul>
-  </section>
-</div>
+  </div>
 
-<script>
-(() => {
-  // Elements
-  const nikInput = document.getElementById("nik-input");
-  const keyboard = document.getElementById("keyboard");
-  const keluhanTextarea = document.getElementById("keluhan-textarea");
-  const micBtn = document.getElementById("mic-btn");
-  const micStatus = document.getElementById("mic-status");
-  const form = document.getElementById("form-rujukan");
-  const output = document.getElementById("output-rujukan");
+  <script>
+    const nikInput = document.getElementById("nik");
+    const keyboardDiv = document.getElementById("keyboard");
 
-  // Virtual Keyboard Logic for NIK Input
-  const MAX_NIK_LENGTH = 16;
+    const keys = "1234567890".split('').map(num => 
+      `<div class="key" onclick="addKey('${num}')">${num}</div>`).join('') +
+      `<div class="key" onclick="delKey()">←</div>` +
+      `<div class="key" onclick="toggleKeyboard(false)">Tutup</div>`;
 
-  function toggleKeyboard(show) {
-    keyboard.style.display = show ? "block" : "none";
-  }
+    keyboardDiv.innerHTML = keys;
 
-  nikInput.addEventListener("focus", () => {
-    toggleKeyboard(true);
-  });
-
-  // Hide keyboard if click outside NIK input or keyboard
-  document.addEventListener("click", e => {
-    if (
-      !nikInput.contains(e.target) &&
-      !keyboard.contains(e.target)
-    ) {
-      toggleKeyboard(false);
+    function toggleKeyboard(show) {
+      keyboardDiv.style.display = show ? "block" : "none";
     }
-  });
 
-  // Handle keyboard button clicks
-  keyboard.addEventListener("click", (e) => {
-    if (e.target.tagName !== "BUTTON") return;
-    const btn = e.target;
-    const action = btn.dataset.action;
-    let val = nikInput.value;
+    function addKey(char) {
+      nikInput.value += char;
+    }
 
-    if (action === "backspace") {
-      // Remove last character
-      if (val.length > 0) {
-        nikInput.value = val.slice(0, -1);
+    function delKey() {
+      nikInput.value = nikInput.value.slice(0, -1);
+    }
+
+    // Voice Input
+    document.getElementById('rekam').onclick = () => {
+      try {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'id-ID';
+        recognition.start();
+        recognition.onstart = () => alert('Silakan bicara...');
+        recognition.onresult = function(event) {
+          document.getElementById('keluhan').value = event.results[0][0].transcript;
+        };
+        recognition.onerror = (e) => {
+          alert('Gagal merekam suara. Pastikan izin microphone diaktifkan.');
+        };
+      } catch (e) {
+        alert("Browser tidak mendukung fitur ini.");
       }
-    } else if (action === "clear") {
-      nikInput.value = "";
-    } else if (!action) {
-      // Insert digit only if under max length
-      if (val.length < MAX_NIK_LENGTH) {
-        nikInput.value = val + btn.textContent;
+    };
+
+    function formatTanggalIndo(date) {
+      return date.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    function cetakRujukan() {
+      const nik = nikInput.value.trim();
+      const faskes = document.getElementById('faskes').value;
+      const poli = document.getElementById('poli').value;
+      const keluhan = document.getElementById('keluhan').value.trim();
+
+      if (!nik || !keluhan) {
+        alert("Harap isi NIK dan rekam keluhan terlebih dahulu.");
+        return;
       }
-    }
-  });
 
-  // Speech Recognition for Keluhan Textarea (Only voice input allowed)
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-  let recognition = null;
-  let recognizing = false;
+      const today = new Date();
+      const berlaku = new Date();
+      berlaku.setMonth(today.getMonth() + 3);
 
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = "id-ID";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.addEventListener("start", () => {
-      recognizing = true;
-      micBtn.classList.add("recording");
-      micStatus.textContent = "Merekam... Silakan berbicara.";
-    });
-
-    recognition.addEventListener("result", (event) => {
-      const text = event.results[0][0].transcript;
-      keluhanTextarea.value = keluhanTextarea.value
-        ? keluhanTextarea.value.trim() + " " + text.trim()
-        : text.trim();
-    });
-
-    recognition.addEventListener("end", () => {
-      recognizing = false;
-      micBtn.classList.remove("recording");
-      micStatus.textContent = "Rekaman selesai.";
-      setTimeout(() => {
-        micStatus.textContent = "";
-      }, 3500);
-    });
-
-    recognition.addEventListener("error", (event) => {
-      recognizing = false;
-      micBtn.classList.remove("recording");
-      micStatus.textContent = "Error perekaman: " + event.error;
-      setTimeout(() => {
-        micStatus.textContent = "";
-      }, 4000);
-    });
-  } else {
-    micBtn.disabled = true;
-    micBtn.title = "Speech Recognition tidak didukung pada browser ini";
-    micStatus.textContent = "Speech Recognition tidak didukung oleh browser ini.";
-  }
-
-  micBtn.addEventListener("click", () => {
-    if (!recognition) return;
-    if (recognizing) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
-  });
-
-  // Disable direct keyboard input on keluhan textarea
-  keluhanTextarea.addEventListener("keydown", (e) => {
-    e.preventDefault();
-  });
-  keluhanTextarea.addEventListener("paste", (e) => {
-    e.preventDefault();
-  });
-
-  // Helper: Format date in Indonesian style (dd/mm/yyyy)
-  function formatTanggalIndo(date) {
-    const dd = String(date.getDate()).padStart(2, "0");
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const yyyy = date.getFullYear();
-    return dd + "/" + mm + "/" + yyyy;
-  }
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // Validate NIK length exactly 16
-    const nik = nikInput.value.trim();
-    if (nik.length !== 16 || !/^\d{16}$/.test(nik)) {
-      alert("NIK harus berisi tepat 16 digit angka.");
-      nikInput.focus();
-      return;
-    }
-
-    const faskes = form.faskes.value;
-    if (!faskes) {
-      alert("Silakan pilih Fasilitas Kesehatan tujuan.");
-      form.faskes.focus();
-      return;
-    }
-
-    const poli = form.poli.value;
-    if (!poli) {
-      alert("Silakan pilih Poli tujuan.");
-      form.poli.focus();
-      return;
-    }
-
-    let keluhan = keluhanTextarea.value.trim();
-    if (!keluhan) {
-      alert("Kolom keluhan harus diisi dengan rekaman suara.");
-      micBtn.focus();
-      return;
-    }
-
-    // Prepare data
-    const tglBuat = new Date();
-    const tglBuatStr = formatTanggalIndo(tglBuat);
-
-    const tglExpire = new Date(tglBuat);
-    tglExpire.setMonth(tglExpire.getMonth() + 3);
-    const tglExpireStr = formatTanggalIndo(tglExpire);
-
-    // Prepare rujukan text
-    const rujukanPlainText =
+      const isi = 
 `RUJUKAN PRAMINA
 PEMERINTAH KABUPATEN BADUNG
-NIK: ${nik}
 
+NIK: ${nik}
 Faskes Tujuan: ${faskes}
 Poli Tujuan: ${poli}
-Keluhan:
-${keluhan}
+Keluhan: ${keluhan}
 
-Tanggal pembuatan rujukan: ${tglBuatStr}
-Tanggal masa berlaku: ${tglExpireStr}
+Tanggal Pembuatan: ${formatTanggalIndo(today)}
+Berlaku Hingga: ${formatTanggalIndo(berlaku)}
 
 Cara Penggunaan Surat Rujukan:
-- Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih.
-- Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan.
-- Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan.
-- Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat.
-- Simpan surat ini dengan baik sebagai bukti rujukan resmi.`;
+- Surat ini hanya berlaku untuk pelayanan kesehatan ibu dan anak.
+- Gunakan di fasilitas kesehatan yang tercantum dalam surat.
+- Berlaku selama 3 bulan sejak tanggal penerbitan.
+- Bawa surat ini saat kunjungan ke faskes tujuan.
+- Jika masa berlaku habis, ajukan ulang melalui sistem PRAMINA atau petugas kesehatan.
+- Simpan surat ini sebagai bukti rujukan resmi.`;
 
-    // Show Rujukan text on screen
-    output.textContent = rujukanPlainText;
-    output.style.display = "block";
-
-    // Encode and open RAWBT app link for printing
-    const encodedText = encodeURIComponent(rujukanPlainText);
-    const rawbtUrl = `rawbt:print?text=${encodedText}`;
-
-    // Open the RAWBT printer app with the rujukan text
-    setTimeout(() => {
-      try {
-        window.location.href = rawbtUrl;
-      } catch {
-        alert(
-          "Gagal membuka aplikasi RAWBT. Pastikan aplikasi RAWBT sudah terpasang untuk mencetak."
-        );
-      }
-    }, 200);
-  });
-
-  // Accessibility helper: visually-hidden class
-  const styleElem = document.createElement("style");
-  styleElem.innerHTML = `
-    .visually-hidden {
-      position: absolute !important;
-      height: 1px; width: 1px;
-      overflow: hidden;
-      clip: rect(1px,1px,1px,1px);
-      white-space: nowrap;
+      const encoded = encodeURIComponent(isi);
+      window.location.href = 'rawbt:print?text=' + encoded;
     }
-  `;
-  document.head.appendChild(styleElem);
-})();
-</script>
+  </script>
 </body>
 </html>
