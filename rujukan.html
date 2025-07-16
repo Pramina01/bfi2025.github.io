@@ -1,196 +1,498 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Form Rujukan PRAMINA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sistem Rujukan Kesehatan Ibu dan Anak - PRAMINA</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    margin: 0;
+    background: #f9fcfd;
+    color: #1b1b1b;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  .container {
+    max-width: 640px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 3px 12px rgb(0 0 0 / 0.1);
+    padding: 24px 32px 36px 32px;
+    width: 100%;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #007b8f;
+    user-select: none;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 2.5px solid #007b8f;
+    border-radius: 5px;
+    outline-offset: 2px;
+    transition:
+      outline-offset 0.2s ease,
+      border-color 0.2s ease;
+    resize: vertical;
+    font-family: inherit;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: #004852;
+    outline-offset: 4px;
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  /* Keyboard Virtual NIK style */
+  #keyboard {
+    margin-top: 10px;
+    user-select: none;
+    display: none;
+    width: 100%;
+    background: #e0f2f7;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  #keyboard .row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+  #keyboard button {
+    flex: 1;
+    max-width: 40px;
+    margin: 0 4px;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid #007b8f;
+    border-radius: 5px;
+    background: white;
+    color: #007b8f;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+  }
+  #keyboard button:active {
+    background: #007b8f;
+    color: white;
+  }
+  #keyboard button.wide {
+    max-width: 90px;
+  }
+
+  /* Button main */
+  button#btn-submit {
+    background-color: #007b8f;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 6px 12px rgb(0 123 143 / 0.44);
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  button#btn-submit:hover {
+    background-color: #004852;
+  }
+  button#btn-submit:active {
+    box-shadow: 0 3px 6px rgb(0 123 143 / 0.55);
+  }
+
+  /* Mic button */
+  #mic-btn {
+    margin-left: 8px;
+    background: #007b8f;
+    border: none;
+    color: white;
+    font-size: 22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 5px 10px rgb(0 123 143 / 0.5);
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+  }
+  #mic-btn:hover {
+    background-color: #004852;
+  }
+  #mic-btn.recording {
+    background-color: #ef4444;
+    box-shadow: 0 0 12px #ef4444cc;
+  }
+
+  /* Output Rujukan Box */
+  #output-rujukan {
+    white-space: pre-wrap;
+    font-family: monospace, monospace;
+    background: #e3f6ff;
+    color: #004852;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-top: 28px;
+    border: 1.5px solid #007b8f;
+  }
+
+  /* Instructions */
+  #instructions {
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.52;
+    background: #f0f8ff;
+    padding: 18px 22px;
+    border: 1.8px solid #007b8f;
+    border-radius: 6px;
+    color: #005a71;
+  }
+
+  /* Responsive for laptops */
+  @media screen and (max-width: 720px) {
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
+      padding: 12px 15px;
     }
     .container {
-      max-width: 700px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 8px;
+      padding: 20px 24px 28px 24px;
     }
-    h1, h2 {
-      text-align: center;
-      color: #007B8F;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 20px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      margin-top: 20px;
-      background-color: #007B8F;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 4px;
-      width: 100%;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .keyboard, .mic-btn {
-      margin-top: 5px;
-      display: inline-block;
-    }
-    .mic-btn {
-      background: #eee;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 5px;
-    }
-    #keyboard-virtual {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    #keyboard-virtual button {
-      width: 40px;
-      padding: 10px;
-      font-size: 16px;
-    }
-    .print-instruction {
-      margin-top: 30px;
-      font-size: 13px;
-      background: #f0f0f0;
-      padding: 15px;
-      border-radius: 4px;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>RUJUKAN PRAMINA</h1>
-    <h2>PEMERINTAH KABUPATEN BADUNG</h2>
+<div class="container" role="main" aria-labelledby="form-title">
 
-    <form id="formRujukan">
-      <label for="nik">NIK</label>
-      <input id="nik" type="text" readonly onclick="activateKeyboard('nik')">
-      <div id="keyboard-virtual"></div>
+  <h1 id="form-title">Sistem Rujukan Kesehatan Ibu dan Anak - PRAMINA</h1>
 
-      <label for="faskes">Pilih Faskes</label>
-      <select id="faskes" required>
-        <option disabled selected>-- Pilih Faskes --</option>
-        <option>RSU Surya Husadha Nusadua - Kuta Selatan</option>
-        <option>RSU Bali Jimbaran - Kuta Selatan</option>
-        <option>RSU Garba Med - Kuta Utara</option>
-        <option>RS Siloam Bali - Kuta</option>
-        <option>RS Universitas Udayana - Kuta Selatan</option>
-        <option>Puskesmas Abiansemal I - Rawat Inap</option>
-        <option>Puskesmas Mengwi I - Rawat Inap</option>
-        <option>Puskesmas Kuta I - Rawat Inap</option>
-        <option>Puskesmas Petang I & II - Non Rawat Inap</option>
-        <option>Puskesmas Kuta Selatan - Non Rawat Inap</option>
-        <option>Puskesmas Kuta Utara - Non Rawat Inap</option>
-      </select>
-
-      <label for="poli">Pilih Poli</label>
-      <select id="poli" required>
-        <option disabled selected>-- Pilih Poli --</option>
-        <option>Poli Gizi</option>
-        <option>Poli KIA</option>
-        <option>Poli Anak</option>
-        <option>Poli Jiwa</option>
-      </select>
-
-      <label for="keluhan">Keluhan</label>
-      <textarea id="keluhan" rows="3" required></textarea>
-      <span class="mic-btn" onclick="rekamSuara()">🎤 Rekam Suara</span>
-
-      <button type="button" onclick="buatRujukan()">🖨️ Buat & Cetak</button>
-    </form>
-
-    <div class="print-instruction">
-      <strong>Cara Penggunaan Surat Rujukan:</strong><br>
-      Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.
+  <form id="form-rujukan" autocomplete="off" novalidate>
+    <div>
+      <label for="nik-input">NIK (Nomor Induk Kependudukan)</label>
+      <input type="text" id="nik-input" name="nik" maxlength="16" placeholder="Klik untuk isi NIK" readonly aria-describedby="keyboard-desc" aria-required="true" autocomplete="off" />
+      <div id="keyboard-desc" class="visually-hidden">Gunakan keyboard virtual di bawah untuk memasukkan angka NIK</div>
+      <div id="keyboard" role="application" aria-label="Keyboard virtual angka untuk NIK">
+        <div class="row" role="row">
+          <button type="button" role="button" aria-label="Angka 1">1</button>
+          <button type="button" role="button" aria-label="Angka 2">2</button>
+          <button type="button" role="button" aria-label="Angka 3">3</button>
+          <button type="button" role="button" aria-label="Hapus" class="wide" data-action="backspace">⌫</button>
+        </div>
+        <div class="row" role="row">
+          <button type="button" role="button" aria-label="Angka 4">4</button>
+          <button type="button" role="button" aria-label="Angka 5">5</button>
+          <button type="button" role="button" aria-label="Angka 6">6</button>
+          <button type="button" role="button" aria-label="Kosongkan NIK" class="wide" data-action="clear">Clear</button>
+        </div>
+        <div class="row" role="row">
+          <button type="button" role="button" aria-label="Angka 7">7</button>
+          <button type="button" role="button" aria-label="Angka 8">8</button>
+          <button type="button" role="button" aria-label="Angka 9">9</button>
+          <button type="button" role="button" aria-label="Kosong" class="wide" disabled></button>
+        </div>
+        <div class="row" role="row">
+          <button type="button" role="button" aria-label="Angka 0" style="flex-grow:1;">0</button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <script>
-    let activeInput = '';
+    <div>
+      <label for="faskes-select">Fasilitas Kesehatan Tujuan</label>
+      <select id="faskes-select" name="faskes" required aria-required="true" aria-describedby="faskes-desc">
+        <option value="" disabled selected>-- Pilih Fasilitas Kesehatan --</option>
+        <optgroup label="Rumah Sakit">
+          <option value="RSU Surya Husadha Nusadua - Kuta Selatan">RSU Surya Husadha Nusadua – Kuta Selatan</option>
+          <option value="RSU Bali Jimbaran - Kuta Selatan">RSU Bali Jimbaran – Kuta Selatan</option>
+          <option value="RSU Garba Med - Kuta Utara">RSU Garba Med – Kuta Utara</option>
+          <option value="RS Siloam Bali - Kuta">RS Siloam Bali – Kuta</option>
+          <option value="RS Universitas Udayana - Kuta Selatan">RS Universitas Udayana – Kuta Selatan</option>
+        </optgroup>
+        <optgroup label="Puskesmas">
+          <option value="Puskesmas Abiansemal I - Rawat Inap">Puskesmas Abiansemal I – Rawat Inap</option>
+          <option value="Puskesmas Mengwi I - Rawat Inap">Puskesmas Mengwi I – Rawat Inap</option>
+          <option value="Puskesmas Kuta I - Rawat Inap">Puskesmas Kuta I – Rawat Inap</option>
+          <option value="Puskesmas Petang I & II - Non Rawat Inap">Puskesmas Petang I & II – Non Rawat Inap</option>
+          <option value="Puskesmas Kuta Selatan - Non Rawat Inap">Puskesmas Kuta Selatan – Non Rawat Inap</option>
+          <option value="Puskesmas Kuta Utara - Non Rawat Inap">Puskesmas Kuta Utara – Non Rawat Inap</option>
+        </optgroup>
+      </select>
+      <div id="faskes-desc" class="visually-hidden">Pilih fasilitas kesehatan tujuan rujukan</div>
+    </div>
 
-    function activateKeyboard(id) {
-      activeInput = id;
-      const keyboard = document.getElementById('keyboard-virtual');
-      const keys = ['1','2','3','4','5','6','7','8','9','0','C','←'];
-      keyboard.innerHTML = '';
-      keys.forEach(k => {
-        const btn = document.createElement('button');
-        btn.innerText = k;
-        btn.onclick = () => handleKey(k);
-        keyboard.appendChild(btn);
-      });
+    <div>
+      <label for="poli-select">Poli Tujuan</label>
+      <select id="poli-select" name="poli" required aria-required="true" aria-describedby="poli-desc">
+        <option value="" disabled selected>-- Pilih Poli Tujuan --</option>
+        <option value="Poli Gizi">Poli Gizi</option>
+        <option value="Poli KIA">Poli KIA</option>
+        <option value="Poli Anak">Poli Anak</option>
+        <option value="Poli Jiwa">Poli Jiwa</option>
+      </select>
+      <div id="poli-desc" class="visually-hidden">Pilih poli tujuan rujukan</div>
+    </div>
+
+    <div>
+      <label for="keluhan-textarea">Keluhan</label>
+      <div style="display:flex; align-items:center;">
+        <textarea id="keluhan-textarea" name="keluhan" placeholder="Tulis keluhan di sini atau gunakan tombol rekam suara" aria-required="true" required></textarea>
+        <button type="button" aria-label="Rekam suara keluhan" id="mic-btn" title="Rekam Suara">🎤</button>
+      </div>
+      <div id="mic-status" aria-live="polite" style="font-size:14px; margin-top:4px; color:#004852;"></div>
+    </div>
+
+    <button type="submit" id="btn-submit" aria-live="polite" aria-atomic="true">Buat &amp; Cetak Rujukan</button>
+  </form>
+
+  <pre id="output-rujukan" aria-live="polite" aria-atomic="true" style="display:none;"></pre>
+
+  <section id="instructions" aria-label="Instruksi Penggunaan Surat Rujukan">
+    <strong>Cara Penggunaan Surat Rujukan:</strong><br />
+    Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.
+  </section>
+</div>
+
+<script>
+(() => {
+  // Elements
+  const nikInput = document.getElementById("nik-input");
+  const keyboard = document.getElementById("keyboard");
+  const keluhanTextarea = document.getElementById("keluhan-textarea");
+  const micBtn = document.getElementById("mic-btn");
+  const micStatus = document.getElementById("mic-status");
+  const form = document.getElementById("form-rujukan");
+  const output = document.getElementById("output-rujukan");
+
+  // Virtual Keyboard Logic for NIK Input
+  const MAX_NIK_LENGTH = 16;
+
+  function toggleKeyboard(show) {
+    keyboard.style.display = show ? "block" : "none";
+  }
+
+  nikInput.addEventListener("focus", () => {
+    toggleKeyboard(true);
+  });
+
+  // Hide keyboard if click outside NIK input or keyboard
+  document.addEventListener("click", e => {
+    if (
+      !nikInput.contains(e.target) &&
+      !keyboard.contains(e.target)
+    ) {
+      toggleKeyboard(false);
     }
+  });
 
-    function handleKey(k) {
-      const input = document.getElementById(activeInput);
-      if (k === '←') input.value = input.value.slice(0, -1);
-      else if (k === 'C') input.value = '';
-      else input.value += k;
+  // Handle keyboard button clicks
+  keyboard.addEventListener("click", (e) => {
+    if (e.target.tagName !== "BUTTON") return;
+    const btn = e.target;
+    const action = btn.dataset.action;
+    let val = nikInput.value;
+
+    if (action === "backspace") {
+      // Remove last character
+      if (val.length > 0) {
+        nikInput.value = val.slice(0, -1);
+      }
+    } else if (action === "clear") {
+      nikInput.value = "";
+    } else if (!action) {
+      // Insert digit only if under max length
+      if (val.length < MAX_NIK_LENGTH) {
+        nikInput.value = val + btn.textContent;
+      }
     }
+  });
 
-    function rekamSuara() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'id-ID';
-      recognition.onresult = function(e) {
-        document.getElementById('keluhan').value = e.results[0][0].transcript;
-      };
+  // Speech Recognition for Keluhan Textarea
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  let recognition = null;
+  let recognizing = false;
+
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "id-ID";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.addEventListener("start", () => {
+      recognizing = true;
+      micBtn.classList.add("recording");
+      micStatus.textContent = "Merekam... Silakan berbicara.";
+    });
+
+    recognition.addEventListener("result", (event) => {
+      const text = event.results[0][0].transcript;
+      keluhanTextarea.value = keluhanTextarea.value
+        ? keluhanTextarea.value.trim() + " " + text.trim()
+        : text.trim();
+    });
+
+    recognition.addEventListener("end", () => {
+      recognizing = false;
+      micBtn.classList.remove("recording");
+      micStatus.textContent = "Rekaman selesai.";
+      setTimeout(() => {
+        micStatus.textContent = "";
+      }, 3500);
+    });
+
+    recognition.addEventListener("error", (event) => {
+      recognizing = false;
+      micBtn.classList.remove("recording");
+      micStatus.textContent = "Error perekaman: " + event.error;
+      setTimeout(() => {
+        micStatus.textContent = "";
+      }, 4000);
+    });
+  } else {
+    micBtn.disabled = true;
+    micBtn.title = "Speech Recognition tidak didukung pada browser ini";
+  }
+
+  micBtn.addEventListener("click", () => {
+    if (!recognition) return;
+    if (recognizing) {
+      recognition.stop();
+    } else {
       recognition.start();
     }
+  });
 
-    function formatTanggal(date) {
-      const d = new Date(date);
-      return d.toLocaleDateString("id-ID", { day: '2-digit', month: '2-digit', year: 'numeric' });
+  // Helper: Format date in Indonesian style (dd/mm/yyyy)
+  function formatTanggalIndo(date) {
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return dd + "/" + mm + "/" + yyyy;
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Validate NIK length exactly 16
+    const nik = nikInput.value.trim();
+    if (nik.length !== 16 || !/^\d{16}$/.test(nik)) {
+      alert("NIK harus berisi tepat 16 digit angka.");
+      nikInput.focus();
+      return;
     }
 
-    function tambah3Bulan(date) {
-      const d = new Date(date);
-      d.setMonth(d.getMonth() + 3);
-      return d;
+    const faskes = form.faskes.value;
+    if (!faskes) {
+      alert("Silakan pilih Fasilitas Kesehatan tujuan.");
+      form.faskes.focus();
+      return;
     }
 
-    function buatRujukan() {
-      const nik = document.getElementById("nik").value.trim();
-      const faskes = document.getElementById("faskes").value;
-      const poli = document.getElementById("poli").value;
-      const keluhan = document.getElementById("keluhan").value.trim();
+    const poli = form.poli.value;
+    if (!poli) {
+      alert("Silakan pilih Poli tujuan.");
+      form.poli.focus();
+      return;
+    }
 
-      if (!nik || !faskes || !poli || !keluhan) {
-        alert("Harap lengkapi semua data.");
-        return;
+    let keluhan = keluhanTextarea.value.trim();
+    if (!keluhan) {
+      alert("Kolom keluhan harus diisi.");
+      keluhanTextarea.focus();
+      return;
+    }
+
+    // Prepare data
+    const tglBuat = new Date();
+    const tglBuatStr = formatTanggalIndo(tglBuat);
+
+    const tglExpire = new Date(tglBuat);
+    tglExpire.setMonth(tglExpire.getMonth() + 3);
+    const tglExpireStr = formatTanggalIndo(tglExpire);
+
+    // Prepare rujukan text
+    const rujukanPlainText =
+`RUJUKAN PRAMINA
+PEMERINTAH KABUPATEN BADUNG
+NIK: ${nik}
+
+Faskes Tujuan: ${faskes}
+Poli Tujuan: ${poli}
+Keluhan:
+${keluhan}
+
+Tanggal pembuatan rujukan: ${tglBuatStr}
+Tanggal masa berlaku: ${tglExpireStr}
+
+Cara Penggunaan Surat Rujukan:
+Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.`;
+
+    // Show Rujukan text on screen
+    output.textContent = rujukanPlainText;
+    output.style.display = "block";
+
+    // Encode and open RAWBT app link for printing
+    const encodedText = encodeURIComponent(rujukanPlainText);
+    const rawbtUrl = `rawbt:print?text=${encodedText}`;
+
+    // Open the RAWBT printer app with the rujukan text
+    // Using a slight delay to ensure output is visible
+    setTimeout(() => {
+      try {
+        window.location.href = rawbtUrl;
+      } catch {
+        alert(
+          "Gagal membuka aplikasi RAWBT. Pastikan aplikasi RAWBT sudah terpasang untuk mencetak."
+        );
       }
+    }, 200);
+  });
 
-      const sekarang = new Date();
-      const masaBerlaku = tambah3Bulan(sekarang);
-
-      const tglInput = formatTanggal(sekarang);
-      const tglBerlaku = formatTanggal(masaBerlaku);
-
-      const isiCetak = `RUJUKAN PRAMINA\nPEMERINTAH KABUPATEN BADUNG\n-----------------------------\nNIK     : ${nik}\nFASKES  : ${faskes}\nPOLI    : ${poli}\nKELUHAN : ${keluhan}\n-----------------------------\nTGL BUAT    : ${tglInput}\nBERLAKU S/D : ${tglBerlaku}\n-----------------------------\nCATATAN: Harap membawa surat ini saat ke faskes. Berlaku 3 bulan.\n`;
-
-      const encoded = encodeURIComponent(isiCetak);
-      const rawbtUrl = `rawbt:print?text=${encoded}`;
-      window.location.href = rawbtUrl;
+  // Accessibility helper: visually-hidden class
+  const styleElem = document.createElement("style");
+  styleElem.innerHTML = `
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px,1px,1px,1px);
+      white-space: nowrap; /* added line */
     }
-  </script>
+  `;
+  document.head.appendChild(styleElem);
+})();
+</script>
 </body>
 </html>
