@@ -59,7 +59,6 @@
     transition:
       outline-offset 0.2s ease,
       border-color 0.2s ease;
-    resize: vertical;
     font-family: inherit;
   }
   input[type="text"]:focus, select:focus, textarea:focus {
@@ -67,8 +66,17 @@
     outline-offset: 4px;
   }
 
+  /* Disable pointer for keluhan textarea */
+  textarea[readonly] {
+    background-color: #e0f2f7;
+    color: #004852;
+    cursor: default;
+    resize: none;
+  }
+
   textarea {
     height: 100px;
+    resize: vertical;
   }
 
   /* Keyboard Virtual NIK style */
@@ -183,6 +191,10 @@
     border-radius: 6px;
     color: #005a71;
   }
+  #instructions ul {
+    margin-top: 8px;
+    padding-left: 20px;
+  }
 
   /* Responsive for laptops */
   @media screen and (max-width: 720px) {
@@ -254,21 +266,9 @@
     </div>
 
     <div>
-      <label for="poli-select">Poli Tujuan</label>
-      <select id="poli-select" name="poli" required aria-required="true" aria-describedby="poli-desc">
-        <option value="" disabled selected>-- Pilih Poli Tujuan --</option>
-        <option value="Poli Gizi">Poli Gizi</option>
-        <option value="Poli KIA">Poli KIA</option>
-        <option value="Poli Anak">Poli Anak</option>
-        <option value="Poli Jiwa">Poli Jiwa</option>
-      </select>
-      <div id="poli-desc" class="visually-hidden">Pilih poli tujuan rujukan</div>
-    </div>
-
-    <div>
-      <label for="keluhan-textarea">Keluhan</label>
+      <label for="keluhan-textarea">Keluhan (Hanya lewat suara)</label>
       <div style="display:flex; align-items:center;">
-        <textarea id="keluhan-textarea" name="keluhan" placeholder="Tulis keluhan di sini atau gunakan tombol rekam suara" aria-required="true" required></textarea>
+        <textarea id="keluhan-textarea" name="keluhan" placeholder="Gunakan tombol rekam suara untuk input keluhan" aria-required="true" required readonly></textarea>
         <button type="button" aria-label="Rekam suara keluhan" id="mic-btn" title="Rekam Suara">🎤</button>
       </div>
       <div id="mic-status" aria-live="polite" style="font-size:14px; margin-top:4px; color:#004852;"></div>
@@ -280,8 +280,14 @@
   <pre id="output-rujukan" aria-live="polite" aria-atomic="true" style="display:none;"></pre>
 
   <section id="instructions" aria-label="Instruksi Penggunaan Surat Rujukan">
-    <strong>Cara Penggunaan Surat Rujukan:</strong><br />
-    Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.
+    <strong>Cara Penggunaan Surat Rujukan:</strong>
+    <ul>
+      <li>Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih.</li>
+      <li>Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan.</li>
+      <li>Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan.</li>
+      <li>Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat.</li>
+      <li>Simpan surat ini dengan baik sebagai bukti rujukan resmi.</li>
+    </ul>
   </section>
 </div>
 
@@ -339,7 +345,7 @@
     }
   });
 
-  // Speech Recognition for Keluhan Textarea
+  // Speech Recognition for Keluhan Textarea (Only voice input allowed)
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   let recognition = null;
   let recognizing = false;
@@ -383,6 +389,7 @@
   } else {
     micBtn.disabled = true;
     micBtn.title = "Speech Recognition tidak didukung pada browser ini";
+    micStatus.textContent = "Speech Recognition tidak didukung oleh browser ini.";
   }
 
   micBtn.addEventListener("click", () => {
@@ -392,6 +399,14 @@
     } else {
       recognition.start();
     }
+  });
+
+  // Disable direct keyboard input on keluhan textarea
+  keluhanTextarea.addEventListener("keydown", (e) => {
+    e.preventDefault();
+  });
+  keluhanTextarea.addEventListener("paste", (e) => {
+    e.preventDefault();
   });
 
   // Helper: Format date in Indonesian style (dd/mm/yyyy)
@@ -429,8 +444,8 @@
 
     let keluhan = keluhanTextarea.value.trim();
     if (!keluhan) {
-      alert("Kolom keluhan harus diisi.");
-      keluhanTextarea.focus();
+      alert("Kolom keluhan harus diisi dengan rekaman suara.");
+      micBtn.focus();
       return;
     }
 
@@ -457,7 +472,11 @@ Tanggal pembuatan rujukan: ${tglBuatStr}
 Tanggal masa berlaku: ${tglExpireStr}
 
 Cara Penggunaan Surat Rujukan:
-Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih. Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan. Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan. Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat. Simpan surat ini dengan baik sebagai bukti rujukan resmi.`;
+- Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fasilitas kesehatan tujuan yang telah dipilih.
+- Masa berlaku surat ini adalah 3 bulan sejak tanggal penerbitan.
+- Harap membawa surat ini dan menunjukkan kepada petugas fasilitas kesehatan pada saat kunjungan.
+- Jika masa berlaku telah habis, silakan lakukan pengajuan ulang melalui sistem PRAMINA atau melalui petugas kesehatan terdekat.
+- Simpan surat ini dengan baik sebagai bukti rujukan resmi.`;
 
     // Show Rujukan text on screen
     output.textContent = rujukanPlainText;
@@ -468,7 +487,6 @@ Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fa
     const rawbtUrl = `rawbt:print?text=${encodedText}`;
 
     // Open the RAWBT printer app with the rujukan text
-    // Using a slight delay to ensure output is visible
     setTimeout(() => {
       try {
         window.location.href = rawbtUrl;
@@ -488,7 +506,7 @@ Surat rujukan ini berlaku untuk keperluan pelayanan kesehatan ibu dan anak di fa
       height: 1px; width: 1px;
       overflow: hidden;
       clip: rect(1px,1px,1px,1px);
-      white-space: nowrap; /* added line */
+      white-space: nowrap;
     }
   `;
   document.head.appendChild(styleElem);
